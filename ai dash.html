@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Industrial Sector AI Posture 2026 — Neural Command Center</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --bg-deep:#f0f4f8;--bg-surface:#fff;--bg-card:rgba(255,255,255,0.88);
+  --bg-card-hover:rgba(255,255,255,0.98);
+  --accent-cyan:#0097a7;--accent-cyan-light:#e0f7fa;
+  --accent-green:#00897b;--accent-green-light:#e0f2f1;
+  --accent-amber:#e65100;--accent-amber-light:#fff3e0;
+  --accent-red:#c62828;--accent-red-light:#ffebee;
+  --accent-purple:#6a1b9a;--accent-purple-light:#f3e5f5;
+  --text-primary:#1a2332;--text-secondary:#37474f;--text-muted:#78909c;
+  --border-subtle:rgba(0,151,167,0.12);--border-medium:rgba(0,151,167,0.25);
+  --shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-card-hover:0 2px 8px rgba(0,151,167,0.08),0 8px 32px rgba(0,0,0,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg-deep);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+.font-mono{font-family:'IBM Plex Mono',monospace}
+#neural-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.main-wrapper{position:relative;z-index:1}
+.glow-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;backdrop-filter:blur(12px);transition:all .4s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;box-shadow:var(--shadow-card)}
+.glow-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-green),var(--accent-cyan));background-size:200% 100%;opacity:0;animation:gs 4s ease infinite}
+.glow-card:hover{background:var(--bg-card-hover);border-color:var(--border-medium);transform:translateY(-2px);box-shadow:var(--shadow-card-hover)}
+.glow-card:hover::before{opacity:1}
+@keyframes gs{0%,100%{background-position:0% 0}50%{background-position:200% 0}}
+.metric-card{position:relative;padding:24px}
+.metric-value{font-family:'IBM Plex Mono',monospace;font-size:2.5rem;font-weight:700;line-height:1;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.02em}
+.metric-value.amber{background:linear-gradient(135deg,var(--accent-amber),#ff8f00);-webkit-background-clip:text;background-clip:text}
+.metric-value.red{background:linear-gradient(135deg,var(--accent-red),#ef5350);-webkit-background-clip:text;background-clip:text}
+.metric-value.purple{background:linear-gradient(135deg,var(--accent-purple),#ab47bc);-webkit-background-clip:text;background-clip:text}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-green);position:relative;display:inline-block}
+.pulse-dot::after{content:'';position:absolute;top:-4px;left:-4px;width:16px;height:16px;border-radius:50%;background:var(--accent-green);opacity:0;animation:pr 2s ease-out infinite}
+@keyframes pr{0%{transform:scale(.5);opacity:.5}100%{transform:scale(2.2);opacity:0}}
+.maturity-ring{position:relative;width:140px;height:140px}
+.maturity-ring svg{transform:rotate(-90deg)}
+.maturity-ring .ring-bg{fill:none;stroke:rgba(0,151,167,0.08);stroke-width:8}
+.maturity-ring .ring-fg{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1)}
+.maturity-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.account-card{cursor:pointer;transition:all .4s cubic-bezier(.22,1,.36,1)}
+.account-card.active{border-color:var(--accent-cyan)!important;box-shadow:0 0 0 2px rgba(0,151,167,0.15),var(--shadow-card-hover)}
+.account-detail-panel{max-height:0;overflow:hidden;opacity:0;transition:max-height .6s cubic-bezier(.22,1,.36,1),opacity .4s}
+.account-detail-panel.open{max-height:800px;opacity:1}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600;letter-spacing:.01em;border:1px solid;white-space:nowrap;font-family:'IBM Plex Sans',sans-serif}
+.tag-cyan{color:var(--accent-cyan);border-color:rgba(0,151,167,0.25);background:var(--accent-cyan-light)}
+.tag-green{color:var(--accent-green);border-color:rgba(0,137,123,0.25);background:var(--accent-green-light)}
+.tag-amber{color:var(--accent-amber);border-color:rgba(230,81,0,0.2);background:var(--accent-amber-light)}
+.tag-red{color:var(--accent-red);border-color:rgba(198,40,40,0.2);background:var(--accent-red-light)}
+.tag-purple{color:var(--accent-purple);border-color:rgba(106,27,154,0.2);background:var(--accent-purple-light)}
+.progress-bar-bg{height:6px;background:rgba(0,151,167,0.08);border-radius:3px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.22,1,.36,1);position:relative}
+.progress-bar-fill::after{content:'';position:absolute;right:0;top:0;width:20px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5));animation:sh 2s infinite}
+@keyframes sh{0%,100%{opacity:0}50%{opacity:1}}
+.data-stream{height:2px;background:linear-gradient(90deg,transparent,var(--accent-cyan),var(--accent-green),transparent);background-size:200% 100%;opacity:.35;animation:sf 3s linear infinite;border-radius:1px}
+@keyframes sf{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.tab-btn{padding:8px 20px;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .3s;border:1px solid transparent;background:transparent;color:var(--text-muted);font-family:'IBM Plex Sans',sans-serif}
+.tab-btn:hover{color:var(--text-primary);background:rgba(0,151,167,0.05)}
+.tab-btn.active{color:var(--accent-cyan);background:var(--accent-cyan-light);border-color:rgba(0,151,167,0.2)}
+.hex-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--accent-cyan-light);border:1px solid rgba(0,151,167,0.15);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);font-size:1rem;color:var(--accent-cyan)}
+.ibm-stripes{display:flex;gap:2px;align-items:flex-end}
+.ibm-stripes span{display:block;width:3px;background:var(--accent-cyan);border-radius:1px;opacity:.6}
+.section-heading{font-family:'IBM Plex Mono',monospace;font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-primary)}
+.section-sub{font-family:'IBM Plex Sans',sans-serif;font-size:.75rem;color:var(--text-muted);margin-top:4px;font-weight:400}
+.mono-label{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.7rem;letter-spacing:.02em}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,151,167,0.2);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(0,151,167,0.4)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg-surface);border:1px solid var(--border-medium);border-radius:12px;padding:14px 20px;z-index:1000;transform:translateY(120%);transition:transform .5s cubic-bezier(.22,1,.36,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);max-width:360px}
+.toast.show{transform:translateY(0)}
+.reveal-section{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.22,1,.36,1)}
+.reveal-section.visible{opacity:1;transform:translateY(0)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-content{background:var(--bg-surface);border:1px solid var(--border-medium);border-radius:16px;padding:32px;max-width:700px;width:90%;max-height:85vh;overflow-y:auto;transform:scale(.9);transition:transform .4s cubic-bezier(.22,1,.36,1);box-shadow:0 16px 64px rgba(0,0,0,0.12)}
+.modal-overlay.open .modal-content{transform:scale(1)}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.geo-pattern{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.35;background-image:radial-gradient(circle at 20% 30%,rgba(0,151,167,0.06) 0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(0,137,123,0.05) 0%,transparent 50%),radial-gradient(circle at 50% 50%,rgba(106,27,154,0.03) 0%,transparent 60%)}
+.dot-grid{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.2;background-image:radial-gradient(circle,rgba(0,151,167,0.18) 1px,transparent 1px);background-size:32px 32px}
+
+/* Loading screen */
+#loading-screen{position:fixed;inset:0;z-index:9999;background:var(--bg-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
+#loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-ring{width:60px;height:60px;border:3px solid rgba(0,151,167,0.12);border-top-color:var(--accent-cyan);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="geo-pattern"></div>
+<div class="dot-grid"></div>
+<canvas id="neural-bg"></canvas>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loader-ring mb-4"></div>
+  <p id="loading-status" class="font-mono text-xs" style="color:var(--text-muted);letter-spacing:.1em;">INITIALIZING NEURAL NETWORK...</p>
+</div>
+
+<div class="main-wrapper" id="dashboard" style="opacity:0;transition:opacity .6s;">
+
+  <!-- Header -->
+  <header class="relative py-8 px-6 md:px-10">
+    <div class="data-stream mb-6"></div>
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="hex-icon"><i class="fas fa-brain"></i></div>
+          <div class="ibm-stripes" aria-hidden="true">
+            <span style="height:8px"></span><span style="height:14px"></span><span style="height:20px"></span>
+            <span style="height:26px"></span><span style="height:20px"></span><span style="height:14px"></span>
+            <span style="height:8px"></span><span style="height:4px"></span>
+          </div>
+          <span class="mono-label" style="color:var(--text-muted);letter-spacing:.15em;font-size:.65rem">NEURAL COMMAND CENTER</span>
+        </div>
+        <h1 class="font-mono text-2xl md:text-4xl font-700 tracking-tight" style="color:var(--text-primary);letter-spacing:-.01em">
+          Industrial AI Posture <span style="color:var(--accent-cyan)">2026</span>
+        </h1>
+        <p class="mt-2 text-sm" style="color:var(--text-muted)">
+          Real-time intelligence across <span id="account-count-header" class="font-mono font-600">0</span> industrial accounts
+          — Last synced: <span id="sync-time" class="font-mono text-xs">—</span>
+          <span id="source-badge" class="mono-label ml-2" style="font-size:.55rem;color:var(--accent-cyan);background:var(--accent-cyan-light);padding:2px 8px;border-radius:10px;border:1px solid rgba(0,151,167,0.2);"></span>
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-4 py-2 rounded-lg" style="background:var(--accent-green-light);border:1px solid rgba(0,137,123,0.2)">
+          <span class="pulse-dot"></span>
+          <span class="mono-label" style="color:var(--accent-green);font-size:.65rem">SYSTEMS ONLINE</span>
+        </div>
+        <button id="refresh-btn" class="px-4 py-2 rounded-lg text-xs font-600 transition-all hover:scale-105 font-mono" style="background:var(--accent-cyan-light);border:1px solid rgba(0,151,167,0.2);color:var(--accent-cyan)" aria-label="Refresh data">
+          <i class="fas fa-sync-alt mr-1"></i> RESYNC
+        </button>
+      </div>
+    </div>
+    <div class="data-stream mt-6"></div>
+  </header>
+
+  <main class="px-4 md:px-10 pb-16 max-w-7xl mx-auto space-y-8">
+
+    <!-- KPI Metrics -->
+    <section class="reveal-section grid grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Key performance indicators">
+      <div class="glow-card metric-card">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--accent-cyan-light)"><i class="fas fa-server text-xs" style="color:var(--accent-cyan)"></i></div>
+          <span class="mono-label" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">AI ACTIVE</span>
+        </div>
+        <div class="metric-value" id="kv-active" data-target="0" data-suffix="/0">0</div>
+        <div class="mt-2 text-xs" id="kv-active-pct" style="color:var(--text-muted)">—</div>
+        <div class="progress-bar-bg mt-3"><div class="progress-bar-fill" id="kv-active-bar" style="width:0%;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-green))" data-width="0"></div></div>
+      </div>
+      <div class="glow-card metric-card">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--accent-green-light)"><i class="fas fa-shield-halved text-xs" style="color:var(--accent-green)"></i></div>
+          <span class="mono-label" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">APPROVED</span>
+        </div>
+        <div class="metric-value" id="kv-approved" data-target="0" data-suffix="%">0</div>
+        <div class="mt-2 text-xs" id="kv-approved-sub" style="color:var(--text-muted)">—</div>
+        <div class="progress-bar-bg mt-3"><div class="progress-bar-fill" id="kv-approved-bar" style="width:0%;background:linear-gradient(90deg,var(--accent-green),#26a69a)" data-width="0"></div></div>
+      </div>
+      <div class="glow-card metric-card">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--accent-amber-light)"><i class="fas fa-robot text-xs" style="color:var(--accent-amber)"></i></div>
+          <span class="mono-label" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">AI AGENTS</span>
+        </div>
+        <div class="metric-value amber" id="kv-agents" data-target="0" data-suffix="/0">0</div>
+        <div class="mt-2 text-xs" id="kv-agents-pct" style="color:var(--text-muted)">—</div>
+        <div class="progress-bar-bg mt-3"><div class="progress-bar-fill" id="kv-agents-bar" style="width:0%;background:linear-gradient(90deg,var(--accent-amber),#ff8f00)" data-width="0"></div></div>
+      </div>
+      <div class="glow-card metric-card">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--accent-purple-light)"><i class="fas fa-chart-line text-xs" style="color:var(--accent-purple)"></i></div>
+          <span class="mono-label" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">AVG MATURITY</span>
+        </div>
+        <div class="metric-value purple" id="kv-maturity" data-target="0" data-suffix="/5" data-decimal="true">0</div>
+        <div class="mt-2 text-xs" id="kv-maturity-phase" style="color:var(--text-muted)">—</div>
+        <div class="progress-bar-bg mt-3"><div class="progress-bar-fill" id="kv-maturity-bar" style="width:0%;background:linear-gradient(90deg,var(--accent-purple),#ab47bc)" data-width="0"></div></div>
+      </div>
+    </section>
+
+    <!-- Maturity + Industry -->
+    <section class="reveal-section grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div class="glow-card p-6 lg:col-span-2">
+        <div class="flex items-center justify-between mb-6">
+          <div><h2 class="section-heading">AI MATURITY ASSESSMENT</h2><p class="section-sub">Per-account maturity on the 5-stage scale</p></div>
+          <div class="flex gap-2">
+            <button class="tab-btn active" data-maturity-view="rings">Rings</button>
+            <button class="tab-btn" data-maturity-view="bar">Bars</button>
+          </div>
+        </div>
+        <div id="maturity-rings-view" class="flex flex-wrap justify-around gap-6"></div>
+        <div id="maturity-bar-view" class="hidden" style="height:200px"><canvas id="maturityBarChart"></canvas></div>
+        <div class="mt-4 flex flex-wrap gap-3 text-xs font-mono" style="color:var(--text-muted);font-size:.65rem">
+          <span>L1: Observing</span><span style="color:var(--border-subtle)">|</span>
+          <span>L2: Measuring</span><span style="color:var(--border-subtle)">|</span>
+          <span>L3: Scaling</span><span style="color:var(--border-subtle)">|</span>
+          <span>L4: Optimizing</span><span style="color:var(--border-subtle)">|</span>
+          <span>L5: Differentiating</span>
+        </div>
+      </div>
+      <div class="glow-card p-6">
+        <h2 class="section-heading">INDUSTRY MIX</h2>
+        <p class="section-sub">Sector distribution</p>
+        <div style="height:200px;position:relative;margin-top:16px"><canvas id="industryPieChart"></canvas></div>
+        <div id="industry-legend" class="mt-4 space-y-2"></div>
+      </div>
+    </section>
+
+    <!-- AI Tools -->
+    <section class="reveal-section glow-card p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div><h2 class="section-heading">AI TOOLS ECOSYSTEM</h2><p class="section-sub">Technology stack mapping across accounts</p></div>
+        <div class="flex gap-2">
+          <button class="tab-btn active" data-tools-view="matrix">Matrix</button>
+          <button class="tab-btn" data-tools-view="chart">Chart</button>
+        </div>
+      </div>
+      <div id="tools-matrix-view"><div class="overflow-x-auto"><table class="w-full text-xs" id="tools-table"><thead><tr style="color:var(--text-muted)"><th class="text-left py-3 px-3 font-mono font-600" style="font-size:.65rem;letter-spacing:.08em">ACCOUNT</th></tr></thead><tbody id="tools-tbody"></tbody></table></div></div>
+      <div id="tools-chart-view" class="hidden" style="height:280px"><canvas id="toolsBarChart"></canvas></div>
+    </section>
+
+    <!-- Functions + Integration -->
+    <section class="reveal-section grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div class="glow-card p-6">
+        <h2 class="section-heading">BUSINESS FUNCTIONS COVERAGE</h2>
+        <p class="section-sub">AI-supported function areas per account</p>
+        <div id="functions-heatmap" class="space-y-3" style="margin-top:16px"></div>
+      </div>
+      <div class="glow-card p-6">
+        <h2 class="section-heading">INTEGRATION & BENEFITS</h2>
+        <p class="section-sub">Workflow integration and realized outcomes</p>
+        <div class="space-y-5" style="margin-top:16px">
+          <div>
+            <div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">WORKFLOW INTEGRATION</div>
+            <div class="grid grid-cols-3 gap-3 text-center" id="integration-stats"></div>
+          </div>
+          <div>
+            <div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">REALIZED BENEFITS</div>
+            <div id="benefits-list" class="space-y-2"></div>
+          </div>
+          <div>
+            <div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">MEASURABLE IMPACT</div>
+            <div class="flex items-center gap-4">
+              <div style="width:80px;height:80px;position:relative"><canvas id="impactDonut"></canvas><div class="absolute inset-0 flex items-center justify-center"><span class="font-mono text-sm font-700" id="impact-pct" style="color:var(--accent-green)">0%</span></div></div>
+              <div class="text-xs" style="color:var(--text-muted)">of accounts report <span style="color:var(--accent-green);font-weight:600">measurable benefits</span> from AI</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Barriers + Radar -->
+    <section class="reveal-section grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div class="glow-card p-6">
+        <h2 class="section-heading">ADOPTION BARRIERS</h2>
+        <p class="section-sub">Key obstacles identified across accounts</p>
+        <div id="barriers-list" class="space-y-4" style="margin-top:16px"></div>
+      </div>
+      <div class="glow-card p-6">
+        <h2 class="section-heading">AI LEVERAGE AREAS</h2>
+        <p class="section-sub">Operational areas where AI is actively deployed</p>
+        <div style="height:280px;margin-top:16px"><canvas id="leverageRadar"></canvas></div>
+      </div>
+    </section>
+
+    <!-- Account Cards -->
+    <section class="reveal-section">
+      <div class="flex items-center justify-between mb-6">
+        <div><h2 class="section-heading">ACCOUNT NEURAL PROFILES</h2><p class="section-sub">Click any card to expand full intelligence profile</p></div>
+        <div class="flex gap-2" id="filter-tabs"></div>
+      </div>
+      <div id="account-cards" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+    </section>
+
+    <!-- Governance -->
+    <section class="reveal-section glow-card p-6">
+      <h2 class="section-heading">PLATFORM GOVERNANCE</h2>
+      <p class="section-sub">IBM vs Client vs Other platform approval status</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="governance-cards" style="margin-top:16px"></div>
+    </section>
+  </main>
+
+  <footer class="text-center py-8 text-xs" style="color:var(--text-muted);border-top:1px solid var(--border-subtle)">
+    <p class="font-mono" style="font-size:.65rem;letter-spacing:.05em">Industrial Sector AI Posture 2026 — Neural Command Center — Data sourced from monday.com</p>
+    <p class="mt-1 font-mono" style="font-size:.6rem">Powered by real-time analytics engine</p>
+  </footer>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" role="alert"><div class="flex items-center gap-3"><i class="fas fa-check-circle" style="color:var(--accent-green)"></i><span id="toast-msg" class="text-sm font-mono" style="font-size:.75rem"></span></div></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="modal-title" class="font-mono text-lg font-700" style="color:var(--accent-cyan)"></h3>
+      <button id="modal-close" class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-gray-100" style="color:var(--text-muted)" aria-label="Close modal"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+//  CONFIG — CHANGE THESE TO UPDATE DATA SOURCE
+// ================================================================
+const CONFIG = {
+  // Box direct download URL: change /s/ to /shared/static/
+  remoteDataUrl: 'https://ibm.box.com/shared/static/twnjvrc4vv2r53si5n5202yht2zp7o6g',
+
+  // Local fallback CSV path (relative to index.html)
+  localDataPath: 'data/data.csv',
+
+  // CORS proxy — needed because Box blocks cross-origin requests
+  // Options: 'corsproxy' | 'allorigins' | 'none'
+  corsProxy: 'corsproxy',
+
+  // Which to try first: 'remote' | 'local'
+  dataPriority: 'remote'
+};
+
+// ================================================================
+//  CORS PROXY HELPERS
+// ================================================================
+function getProxyUrl(rawUrl) {
+  if (CONFIG.corsProxy === 'corsproxy') return 'https://corsproxy.io/?' + encodeURIComponent(rawUrl);
+  if (CONFIG.corsProxy === 'allorigins') return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rawUrl);
+  return rawUrl;
+}
+
+// ================================================================
+//  GLOBAL STATE
+// ================================================================
+let accounts = [];
+let charts = {};
+const maturityColors = ['#0097a7','#0097a7','#00897b','#e65100','#6a1b9a'];
+const maturityPhaseNames = ['','Observing','Measuring','Scaling','Optimizing','Differentiating'];
+
+// ================================================================
+//  COLUMN MAPPING — maps spreadsheet headers to internal field names
+// ================================================================
+const COLUMN_MAP = {
+  'Name': 'name',
+  'Client Name': 'client',
+  'Industry': 'industry',
+  'Market Geography': 'geo',
+  'Is AI platform currently being used in the account?': 'aiUsed',
+  'Is AI approved usage approved by Client?': 'clientApproved',
+  'Brief description of the AI Platform': 'description',
+  'What business functions are supported by AI?': 'functions',
+  'Are AI tools integrated into delivery workflows?': 'integration',
+  'What state is the AI implementation?': 'state',
+  'What is the Technology Stack?': 'techStack',
+  'Which AI tools are currently used?': 'tools',
+  'Are any AI agents currently piloted or deployed?': 'agentsDeployed',
+  'If yes, please describe the use case.': 'agentUseCase',
+  'Has AI delivered measurable benefits?': 'measurableBenefits',
+  'Which benefits have been realized?': 'benefits',
+  'What are the biggest barriers to AI adoption?': 'barriers',
+  'What support is required to accelerate adoption?': 'supportNeeded',
+  'Project ID': 'projectId',
+  'Is it IBM or Client approved platform?': 'platformApproval',
+  'What is your assessment of maturity level?': 'maturityRaw',
+  'Which areas are currently leveraging AI?': 'leverageAreas',
+  'What is the category of AI implementation?': 'categories'
+};
+
+// ================================================================
+//  PARSING HELPERS
+// ================================================================
+function parseList(text) {
+  if (!text || typeof text !== 'string') return [];
+  return text.split(',').map(s => s.trim()).filter(Boolean);
+}
+
+function parseMaturity(text) {
+  if (!text) return { level: 0, label: 'Unknown' };
+  const m = text.match(/(\d)/);
+  const level = m ? Math.min(Math.max(parseInt(m[1]), 0), 5) : 0;
+  return { level, label: text.trim() || ('Level ' + level) };
+}
+
+function yesNo(val) {
+  if (!val) return false;
+  return String(val).trim().toLowerCase() === 'yes';
+}
+
+function getFilterTag(industry) {
+  if (!industry) return 'other';
+  const i = industry.toLowerCase();
+  if (i.includes('automobile') || i.includes('auto')) return 'auto';
+  if (i.includes('aerospace') || i.includes('defence') || i.includes('defense')) return 'aero';
+  if (i.includes('chemical') || i.includes('petroleum') || i.includes('energy') || i.includes('oil') || i.includes('gas')) return 'energy';
+  return 'other';
+}
+
+// ================================================================
+//  MAP RAW ROW → ACCOUNT OBJECT
+// ================================================================
+function mapRow(rawRow) {
+  const row = {};
+  // Apply column mapping — try exact match first, then contains match
+  for (const [csvHeader, internalKey] of Object.entries(COLUMN_MAP)) {
+    if (rawRow[csvHeader] !== undefined) {
+      row[internalKey] = rawRow[csvHeader];
+    } else {
+      // Fuzzy: find a header that contains the key phrase
+      const found = Object.keys(rawRow).find(h => h.trim().includes(csvHeader));
+      if (found) row[internalKey] = rawRow[found];
+    }
+  }
+
+  const maturity = parseMaturity(row.maturityRaw);
+
+  return {
+    name: (row.name || '').trim(),
+    client: (row.client || '').trim(),
+    industry: (row.industry || '').trim(),
+    geo: (row.geo || '').trim(),
+    aiUsed: yesNo(row.aiUsed),
+    clientApproved: yesNo(row.clientApproved),
+    description: (row.description || '').trim(),
+    functions: parseList(row.functions),
+    integration: (row.integration || 'Unknown').trim(),
+    state: (row.state || 'Unknown').trim(),
+    techStack: (row.techStack || '').trim(),
+    tools: parseList(row.tools),
+    agentsDeployed: yesNo(row.agentsDeployed),
+    agentUseCase: (row.agentUseCase || '').trim(),
+    measurableBenefits: (row.measurableBenefits || 'Unknown').trim(),
+    benefits: parseList(row.benefits),
+    barriers: parseList(row.barriers),
+    supportNeeded: (row.supportNeeded || '').trim(),
+    projectId: (row.projectId || '').trim(),
+    platformApproval: (row.platformApproval || 'Unknown').trim(),
+    maturityLevel: maturity.level,
+    maturityLabel: maturity.label,
+    leverageAreas: parseList(row.leverageAreas),
+    categories: parseList(row.categories),
+    filter: getFilterTag((row.industry || '').trim())
+  };
+}
+
+// ================================================================
+//  DATA LOADING
+// ================================================================
+function setStatus(t) { const el = document.getElementById('loading-status'); if (el) el.textContent = t; }
+
+function detectAndParse(buffer) {
+  const view = new Uint8Array(buffer);
+  // ZIP signature = Excel file
+  if (view.length > 1 && view[0] === 0x50 && view[1] === 0x4B) {
+    const wb = XLSX.read(buffer, { type: 'array' });
+    const csv = XLSX.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]]);
+    return parseCSV(csv);
+  }
+  return parseCSV(new TextDecoder('utf-8').decode(buffer));
+}
+
+function parseCSV(text) {
+  const result = Papa.parse(text, { header: true, skipEmptyLines: true, transformHeader: h => h.trim() });
+  if (result.errors.length > 5) console.warn('CSV parse warnings:', result.errors.slice(0, 5));
+  return result.data.filter(r => {
+    // Keep rows that have at least a name or client
+    const vals = Object.values(r).map(v => (v || '').trim());
+    return vals.some(v => v.length > 0);
+  }).map(mapRow).filter(a => a.name || a.client);
+}
+
+async function loadRemote() {
+  setStatus('FETCHING REMOTE DATA...');
+  const url = getProxyUrl(CONFIG.remoteDataUrl);
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  const buffer = await resp.arrayBuffer();
+  return detectAndParse(buffer);
+}
+
+async function loadLocal() {
+  setStatus('LOADING LOCAL DATA...');
+  const resp = await fetch(CONFIG.localDataPath);
+  if (!resp.ok) throw new Error('Local file not found: ' + CONFIG.localDataPath);
+  const buffer = await resp.arrayBuffer();
+  return detectAndParse(buffer);
+}
+
+async function loadData() {
+  const tryRemote = CONFIG.dataPriority === 'remote';
+  const first = tryRemote ? loadRemote : loadLocal;
+  const fallback = tryRemote ? loadLocal : loadRemote;
+  const firstName = tryRemote ? 'remote' : 'local';
+  const fallbackName = tryRemote ? 'local' : 'remote';
+
+  try {
+    accounts = await first();
+    return firstName;
+  } catch (e) {
+    console.warn(firstName + ' failed:', e.message);
+    try {
+      accounts = await fallback();
+      return fallbackName;
+    } catch (e2) {
+      console.error('All data sources failed:', e2.message);
+      throw e2;
+    }
+  }
+}
+
+// ================================================================
+//  NEURAL NETWORK BACKGROUND
+// ================================================================
+const neuralCanvas = document.getElementById('neural-bg');
+const nCtx = neuralCanvas.getContext('2d');
+let nodes = [], mouseX = -1000, mouseY = -1000;
+
+function resizeNeural() { neuralCanvas.width = window.innerWidth; neuralCanvas.height = window.innerHeight; }
+resizeNeural();
+window.addEventListener('resize', resizeNeural);
+document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+function initNodes() {
+  nodes = [];
+  const count = Math.min(50, Math.floor(window.innerWidth * window.innerHeight / 25000));
+  for (let i = 0; i < count; i++) {
+    nodes.push({ x: Math.random() * neuralCanvas.width, y: Math.random() * neuralCanvas.height, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 2.5 + 1, pulse: Math.random() * Math.PI * 2 });
+  }
+}
+initNodes();
+
+function drawNeural() {
+  nCtx.clearRect(0, 0, neuralCanvas.width, neuralCanvas.height);
+  for (let i = 0; i < nodes.length; i++) {
+    const n = nodes[i];
+    n.x += n.vx; n.y += n.vy; n.pulse += 0.015;
+    if (n.x < 0 || n.x > neuralCanvas.width) n.vx *= -1;
+    if (n.y < 0 || n.y > neuralCanvas.height) n.vy *= -1;
+    const dx = mouseX - n.x, dy = mouseY - n.y, dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 220) { n.x += dx * 0.001; n.y += dy * 0.001; }
+    nCtx.beginPath();
+    nCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    nCtx.fillStyle = `rgba(0,151,167,${0.18 + Math.sin(n.pulse) * 0.08})`;
+    nCtx.fill();
+    for (let j = i + 1; j < nodes.length; j++) {
+      const m = nodes[j], d = Math.sqrt((n.x - m.x) ** 2 + (n.y - m.y) ** 2);
+      if (d < 170) { nCtx.beginPath(); nCtx.moveTo(n.x, n.y); nCtx.lineTo(m.x, m.y); nCtx.strokeStyle = `rgba(0,151,167,${(1 - d / 170) * 0.1})`; nCtx.lineWidth = 0.8; nCtx.stroke(); }
+    }
+  }
+  requestAnimationFrame(drawNeural);
+}
+drawNeural();
+
+// ================================================================
+//  UI HELPERS
+// ================================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+const modal = document.getElementById('modal');
+document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('open'));
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+
+function openModal(title, html) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = html;
+  modal.classList.add('open');
+}
+
+function destroyChart(key) { if (charts[key]) { charts[key].destroy(); delete charts[key]; } }
+
+// ================================================================
+//  ANIMATE COUNTERS
+// ================================================================
+function animateCounter(el, target, suffix, isDecimal) {
+  const duration = 1500, start = performance.now();
+  function update(now) {
+    const p = Math.min((now - start) / duration, 1), eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = (isDecimal ? (target * eased).toFixed(1) : Math.round(target * eased)) + suffix;
+    if (p < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+function animateProgressBars() {
+  document.querySelectorAll('.progress-bar-fill[data-width]').forEach(el => {
+    setTimeout(() => { el.style.width = el.dataset.width + '%'; }, 300);
+  });
+}
+
+// ================================================================
+//  RENDER: KPIs
+// ================================================================
+function renderKPIs() {
+  const total = accounts.length;
+  const active = accounts.filter(a => a.aiUsed).length;
+  const approved = accounts.filter(a => a.clientApproved).length;
+  const agents = accounts.filter(a => a.agentsDeployed).length;
+  const avgMat = total ? (accounts.reduce((s, a) => s + a.maturityLevel, 0) / total) : 0;
+  const avgPhase = maturityPhaseNames[Math.round(avgMat)] || 'Unknown';
+
+  document.getElementById('account-count-header').textContent = total;
+
+  const elActive = document.getElementById('kv-active');
+  elActive.dataset.target = active; elActive.dataset.suffix = '/' + total;
+  animateCounter(elActive, active, '/' + total, false);
+  document.getElementById('kv-active-pct').textContent = total ? Math.round(active / total * 100) + '% adoption rate' : '—';
+  document.getElementById('kv-active-bar').dataset.width = total ? Math.round(active / total * 100) : 0;
+
+  const elAppr = document.getElementById('kv-approved');
+  elAppr.dataset.target = total ? Math.round(approved / total * 100) : 0; elAppr.dataset.suffix = '%';
+  animateCounter(elAppr, total ? Math.round(approved / total * 100) : 0, '%', false);
+  document.getElementById('kv-approved-sub').textContent = approved + '/' + total + ' compliant';
+  document.getElementById('kv-approved-bar').dataset.width = total ? Math.round(approved / total * 100) : 0;
+
+  const elAg = document.getElementById('kv-agents');
+  elAg.dataset.target = agents; elAg.dataset.suffix = '/' + total;
+  animateCounter(elAg, agents, '/' + total, false);
+  document.getElementById('kv-agents-pct').textContent = total ? Math.round(agents / total * 100) + '% pilot rate' : '—';
+  document.getElementById('kv-agents-bar').dataset.width = total ? Math.round(agents / total * 100) : 0;
+
+  const elMat = document.getElementById('kv-maturity');
+  elMat.dataset.target = avgMat; elMat.dataset.suffix = '/5'; elMat.dataset.decimal = 'true';
+  animateCounter(elMat, avgMat, '/5', true);
+  document.getElementById('kv-maturity-phase').textContent = avgPhase + ' phase';
+  document.getElementById('kv-maturity-bar').dataset.width = Math.round(avgMat / 5 * 100);
+
+  setTimeout(animateProgressBars, 200);
+}
+
+// ================================================================
+//  RENDER: MATURITY RINGS
+// ================================================================
+function renderMaturityRings() {
+  const c = document.getElementById('maturity-rings-view');
+  c.innerHTML = '';
+  accounts.forEach(a => {
+    const pct = (a.maturityLevel / 5) * 100;
+    const circ = 2 * Math.PI * 56;
+    const offset = circ - (pct / 100) * circ;
+    const color = maturityColors[a.maturityLevel - 1] || '#0097a7';
+    const div = document.createElement('div');
+    div.className = 'flex flex-col items-center gap-3 cursor-pointer';
+    div.innerHTML = `<div class="maturity-ring"><svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="56" class="ring-bg"/><circle cx="70" cy="70" r="56" class="ring-fg" stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${circ}" data-offset="${offset}"/></svg><div class="maturity-label"><div class="font-mono text-2xl font-700" style="color:${color}">L${a.maturityLevel}</div><div class="mono-label" style="color:var(--text-muted)">${Math.round(pct)}%</div></div></div><div class="text-center"><div class="text-xs font-600" style="color:var(--text-primary)">${a.client}</div><div class="mono-label" style="color:var(--text-muted);font-size:.6rem">${a.industry}</div></div>`;
+    div.addEventListener('click', () => openAccountModal(a));
+    c.appendChild(div);
+  });
+  setTimeout(() => { c.querySelectorAll('.ring-fg').forEach(ring => { ring.style.strokeDashoffset = ring.dataset.offset; }); }, 200);
+}
+
+function renderMaturityBarChart() {
+  destroyChart('maturityBar');
+  charts.maturityBar = new Chart(document.getElementById('maturityBarChart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: accounts.map(a => a.client), datasets: [{ data: accounts.map(a => a.maturityLevel), backgroundColor: accounts.map(a => (maturityColors[a.maturityLevel - 1] || '#0097a7') + '33'), borderColor: accounts.map(a => maturityColors[a.maturityLevel - 1] || '#0097a7'), borderWidth: 2, borderRadius: 8, barPercentage: 0.5 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#fff', borderColor: 'rgba(0,151,167,0.3)', borderWidth: 1, titleFont: { family: "'IBM Plex Mono',monospace", weight: '600' }, bodyFont: { family: "'IBM Plex Sans',sans-serif" }, titleColor: '#0097a7', bodyColor: '#1a2332', padding: 12, cornerRadius: 8, callbacks: { label: ctx => 'Level ' + ctx.raw + ' / 5' } } }, scales: { y: { max: 5, ticks: { stepSize: 1, callback: v => 'L' + v, font: { family: "'IBM Plex Mono',monospace", size: 10 } }, grid: { color: 'rgba(0,151,167,0.06)' }, border: { color: 'rgba(0,151,167,0.1)' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false }, border: { color: 'rgba(0,151,167,0.1)' } } } }
+  });
+}
+
+document.querySelectorAll('[data-maturity-view]').forEach(btn => {
+  btn.addEventListener('click', function() {
+    this.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const v = this.dataset.maturityView;
+    document.getElementById('maturity-rings-view').classList.toggle('hidden', v !== 'rings');
+    document.getElementById('maturity-bar-view').classList.toggle('hidden', v !== 'bar');
+    if (v === 'bar') renderMaturityBarChart();
+  });
+});
+
+// ================================================================
+//  RENDER: INDUSTRY PIE
+// ================================================================
+function renderIndustryPie() {
+  const map = {};
+  accounts.forEach(a => { if (a.industry) map[a.industry] = (map[a.industry] || 0) + 1; });
+  const labels = Object.keys(map), data = Object.values(map);
+  const colors = ['#0097a7','#00897b','#e65100','#6a1b9a','#c62828'];
+  destroyChart('industryPie');
+  charts.industryPie = new Chart(document.getElementById('industryPieChart').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, labels.length).map(c => c + '22'), borderColor: colors.slice(0, labels.length), borderWidth: 2, hoverBorderWidth: 3 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false }, tooltip: { backgroundColor: '#fff', borderColor: 'rgba(0,151,167,0.3)', borderWidth: 1, titleColor: '#0097a7', bodyColor: '#1a2332', padding: 12, cornerRadius: 8, callbacks: { label: ctx => ctx.label + ': ' + ctx.raw + ' account(s)' } } } }
+  });
+  const legend = document.getElementById('industry-legend');
+  legend.innerHTML = '';
+  labels.forEach((l, i) => {
+    legend.innerHTML += `<div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-sm flex-shrink-0" style="background:${colors[i]}"></span><span style="color:var(--text-muted)">${l}</span><span class="ml-auto font-mono font-600" style="color:var(--text-primary)">${data[i]}</span></div>`;
+  });
+}
+
+// ================================================================
+//  RENDER: TOOLS MATRIX
+// ================================================================
+function renderToolsMatrix() {
+  const allTools = [...new Set(accounts.flatMap(a => a.tools))];
+  const thead = document.querySelector('#tools-table thead tr');
+  // Remove old tool headers
+  thead.querySelectorAll('th:not(:first-child)').forEach(th => th.remove());
+  allTools.forEach(t => {
+    const th = document.createElement('th');
+    th.className = 'py-3 px-2 font-mono font-600 text-center';
+    th.style.cssText = 'color:var(--text-muted);font-size:.6rem;max-width:90px;white-space:nowrap;letter-spacing:.04em';
+    th.textContent = t;
+    thead.appendChild(th);
+  });
+  const tbody = document.getElementById('tools-tbody');
+  tbody.innerHTML = '';
+  accounts.forEach(a => {
+    const tr = document.createElement('tr');
+    tr.style.borderTop = '1px solid var(--border-subtle)';
+    tr.innerHTML = `<td class="py-3 px-3 font-600" style="color:var(--text-primary);white-space:nowrap">${a.client}</td>`;
+    allTools.forEach(t => {
+      const td = document.createElement('td');
+      td.className = 'py-3 px-2 text-center';
+      td.innerHTML = a.tools.includes(t) ? '<span style="color:var(--accent-green);font-size:.9rem"><i class="fas fa-check-circle"></i></span>' : '<span style="color:rgba(120,144,156,0.2);font-size:.7rem"><i class="fas fa-circle"></i></span>';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+function renderToolsBarChart() {
+  const tc = {};
+  accounts.forEach(a => a.tools.forEach(t => { tc[t] = (tc[t] || 0) + 1; }));
+  const sorted = Object.entries(tc).sort((a, b) => b[1] - a[1]);
+  destroyChart('toolsBar');
+  charts.toolsBar = new Chart(document.getElementById('toolsBarChart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: sorted.map(s => s[0]), datasets: [{ data: sorted.map(s => s[1]), backgroundColor: 'rgba(0,151,167,0.12)', borderColor: '#0097a7', borderWidth: 2, borderRadius: 6, barPercentage: 0.5 }] },
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#fff', borderColor: 'rgba(0,151,167,0.3)', borderWidth: 1, titleColor: '#0097a7', bodyColor: '#1a2332', padding: 12, cornerRadius: 8, callbacks: { label: ctx => ctx.raw + ' account(s)' } } }, scales: { x: { ticks: { stepSize: 1, font: { family: "'IBM Plex Mono',monospace", size: 10 } }, grid: { color: 'rgba(0,151,167,0.06)' }, border: { color: 'rgba(0,151,167,0.1)' } }, y: { ticks: { font: { size: 10 } }, grid: { display: false }, border: { color: 'rgba(0,151,167,0.1)' } } } }
+  });
+}
+
+document.querySelectorAll('[data-tools-view]').forEach(btn => {
+  btn.addEventListener('click', function() {
+    this.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const v = this.dataset.toolsView;
+    document.getElementById('tools-matrix-view').classList.toggle('hidden', v !== 'matrix');
+    document.getElementById('tools-chart-view').classList.toggle('hidden', v !== 'chart');
+    if (v === 'chart') renderToolsBarChart();
+  });
+});
+
+// ================================================================
+//  RENDER: FUNCTIONS HEATMAP
+// ================================================================
+function renderFunctionsHeatmap() {
+  const allFuncs = [...new Set(accounts.flatMap(a => a.functions))].filter(Boolean);
+  const c = document.getElementById('functions-heatmap');
+  c.innerHTML = '';
+  if (!allFuncs.length) { c.innerHTML = '<p class="text-xs" style="color:var(--text-muted)">No function data available</p>'; return; }
+  const hdr = document.createElement('div');
+  hdr.className = 'flex items-center gap-3 mb-1';
+  hdr.innerHTML = '<div class="w-32 flex-shrink-0"></div><div class="flex gap-1 flex-1">' + accounts.map(a => `<div class="flex-1 text-center mono-label font-600" style="color:var(--accent-cyan);max-width:80px;font-size:.55rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${a.client}">${a.client.split(' ')[0]}</div>`).join('') + '</div>';
+  c.appendChild(hdr);
+  allFuncs.forEach(fn => {
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-3';
+    row.innerHTML = `<div class="mono-label w-32 flex-shrink-0" style="color:var(--text-muted);font-size:.6rem">${fn}</div>`;
+    const bars = document.createElement('div');
+    bars.className = 'flex gap-1 flex-1';
+    accounts.forEach(a => {
+      const has = a.functions.includes(fn);
+      const cell = document.createElement('div');
+      cell.className = 'flex-1 h-7 rounded-lg flex items-center justify-center text-xs transition-all';
+      cell.style.maxWidth = '80px';
+      if (has) { cell.style.background = 'var(--accent-cyan-light)'; cell.style.border = '1px solid rgba(0,151,167,0.25)'; cell.style.color = 'var(--accent-cyan)'; cell.innerHTML = '<i class="fas fa-check" style="font-size:.6rem"></i>'; }
+      else { cell.style.background = 'rgba(120,144,156,0.04)'; cell.style.border = '1px solid rgba(120,144,156,0.08)'; cell.innerHTML = '<span style="color:rgba(120,144,156,0.2)">—</span>'; }
+      bars.appendChild(cell);
+    });
+    row.appendChild(bars);
+    c.appendChild(row);
+  });
+}
+
+// ================================================================
+//  RENDER: INTEGRATION & BENEFITS
+// ================================================================
+function renderIntegration() {
+  const counts = { 'Integrated': 0, 'Partially': 0, 'Not Integrated': 0, 'Unknown': 0 };
+  accounts.forEach(a => { counts[a.integration] = (counts[a.integration] || 0) + 1; });
+  const items = [
+    { label: 'Integrated', count: counts['Integrated'] || 0, color: 'var(--accent-green)', bg: 'var(--accent-green-light)', border: 'rgba(0,137,123,0.2)' },
+    { label: 'Partial', count: counts['Partially'] || 0, color: 'var(--accent-amber)', bg: 'var(--accent-amber-light)', border: 'rgba(230,81,0,0.2)' },
+    { label: 'Not Integrated', count: counts['Not Integrated'] || 0, color: 'var(--accent-red)', bg: 'var(--accent-red-light)', border: 'rgba(198,40,40,0.2)' }
+  ];
+  document.getElementById('integration-stats').innerHTML = items.map(i => `<div class="glow-card p-3" style="border-color:${i.border}"><div class="font-mono text-lg font-700" style="color:${i.color}">${i.count}</div><div class="text-xs mt-1" style="color:var(--text-muted)">${i.label}</div></div>`).join('');
+}
+
+function renderBenefits() {
+  const all = {};
+  accounts.forEach(a => a.benefits.forEach(b => { all[b] = (all[b] || 0) + 1; }));
+  const sorted = Object.entries(all).sort((a, b) => b[1] - a[1]);
+  const max = sorted[0]?.[1] || 1;
+  const icons = { 'Lower Operational Cost': 'fa-coins', 'Automation of Manual Tasks': 'fa-gears', 'Improved Customer Experience': 'fa-face-smile', 'Better Compliance': 'fa-shield-halved', 'Improved Quality': 'fa-gem' };
+  const c = document.getElementById('benefits-list');
+  c.innerHTML = '';
+  if (!sorted.length) { c.innerHTML = '<p class="text-xs" style="color:var(--text-muted)">No benefits reported yet</p>'; return; }
+  sorted.forEach(([b, count]) => {
+    c.innerHTML += `<div class="flex items-center gap-3"><i class="fas ${icons[b] || 'fa-star'} text-xs w-4 text-center" style="color:var(--accent-green)"></i><span class="text-xs flex-1" style="color:var(--text-primary)">${b}</span><div class="w-24 h-1.5 rounded" style="background:rgba(0,137,123,0.1)"><div class="h-full rounded" style="width:${(count/max)*100}%;background:var(--accent-green);transition:width 1s"></div></div><span class="font-mono text-xs font-600 w-4 text-right" style="color:var(--accent-green)">${count}</span></div>`;
+  });
+}
+
+function renderImpactDonut() {
+  const yes = accounts.filter(a => a.measurableBenefits.toLowerCase() === 'yes').length;
+  const no = accounts.length - yes;
+  const pct = accounts.length ? Math.round(yes / accounts.length * 100) : 0;
+  document.getElementById('impact-pct').textContent = pct + '%';
+  destroyChart('impact');
+  charts.impact = new Chart(document.getElementById('impactDonut').getContext('2d'), {
+    type: 'doughnut',
+    data: { datasets: [{ data: [yes, no], backgroundColor: ['rgba(0,137,123,0.2)', 'rgba(120,144,156,0.08)'], borderColor: ['#00897b', 'rgba(120,144,156,0.15)'], borderWidth: 2 }] },
+    options: { responsive: true, maintainAspectRatio: true, cutout: '75%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+  });
+}
+
+// ================================================================
+//  RENDER: BARRIERS
+// ================================================================
+function renderBarriers() {
+  const map = {};
+  accounts.forEach(a => a.barriers.forEach(b => { if (!map[b]) map[b] = { name: b, accts: [], count: 0 }; map[b].accts.push(a.client); map[b].count++; }));
+  const items = Object.values(map).sort((a, b) => b.count - a.count);
+  const c = document.getElementById('barriers-list');
+  c.innerHTML = '';
+  if (!items.length) { c.innerHTML = '<p class="text-xs" style="color:var(--text-muted)">No barriers reported</p>'; return; }
+  const iconMap = { 'Client Restrictions': 'fa-lock', 'Security Concerns': 'fa-shield-halved', 'Tool Limitations': 'fa-wrench' };
+  items.forEach(b => {
+    const sev = b.count >= 2 ? 'high' : 'medium';
+    const color = sev === 'high' ? 'var(--accent-red)' : 'var(--accent-amber)';
+    const bg = sev === 'high' ? 'var(--accent-red-light)' : 'var(--accent-amber-light)';
+    c.innerHTML += `<div class="glow-card p-4" style="border-left:3px solid ${color}"><div class="flex items-center gap-3 mb-2"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:${bg}"><i class="fas ${iconMap[b.name] || 'fa-exclamation-triangle'} text-xs" style="color:${color}"></i></div><span class="text-sm font-600" style="color:var(--text-primary)">${b.name}</span><span class="tag ${sev === 'high' ? 'tag-red' : 'tag-amber'} ml-auto">${sev.toUpperCase()}</span></div><div class="mono-label" style="color:var(--text-muted);font-size:.6rem">Affected: ${b.accts.join(', ')}</div></div>`;
+  });
+}
+
+// ================================================================
+//  RENDER: LEVERAGE RADAR
+// ================================================================
+function renderLeverageRadar() {
+  const allAreas = [...new Set(accounts.flatMap(a => a.leverageAreas))];
+  if (!allAreas.length) return;
+  const dataPoints = allAreas.map(area => accounts.filter(a => a.leverageAreas.includes(area)).length);
+  destroyChart('leverage');
+  charts.leverage = new Chart(document.getElementById('leverageRadar').getContext('2d'), {
+    type: 'radar',
+    data: { labels: allAreas, datasets: [{ label: 'Accounts Leveraging', data: dataPoints, backgroundColor: 'rgba(0,151,167,0.08)', borderColor: '#0097a7', borderWidth: 2, pointBackgroundColor: '#0097a7', pointBorderColor: '#0097a7', pointRadius: 3, pointHoverRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#fff', borderColor: 'rgba(0,151,167,0.3)', borderWidth: 1, titleColor: '#0097a7', bodyColor: '#1a2332', padding: 12, cornerRadius: 8, callbacks: { label: ctx => ctx.raw + ' account(s)' } } }, scales: { r: { beginAtZero: true, max: Math.max(4, ...dataPoints), ticks: { display: false, stepSize: 1 }, grid: { color: 'rgba(0,151,167,0.08)' }, angleLines: { color: 'rgba(0,151,167,0.08)' }, pointLabels: { color: '#78909c', font: { size: 9 } } } } }
+  });
+}
+
+// ================================================================
+//  RENDER: FILTER TABS
+// ================================================================
+function renderFilterTabs() {
+  const filters = new Map();
+  filters.set('all', 'All');
+  accounts.forEach(a => {
+    if (a.industry && !filters.has(a.filter)) {
+      filters.set(a.filter, a.industry.split('&')[0].trim());
+    }
+  });
+  const c = document.getElementById('filter-tabs');
+  c.innerHTML = '';
+  filters.forEach((label, key) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (key === 'all' ? ' active' : '');
+    btn.textContent = label;
+    btn.dataset.filter = key;
+    btn.addEventListener('click', function() {
+      c.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      renderAccountCards(this.dataset.filter);
+    });
+    c.appendChild(btn);
+  });
+}
+
+// ================================================================
+//  RENDER: ACCOUNT CARDS
+// ================================================================
+function renderAccountCards(filter = 'all') {
+  const c = document.getElementById('account-cards');
+  c.innerHTML = '';
+  const filtered = filter === 'all' ? accounts : accounts.filter(a => a.filter === filter);
+  if (!filtered.length) { c.innerHTML = '<p class="text-sm" style="color:var(--text-muted)">No accounts match this filter.</p>'; return; }
+
+  filtered.forEach((a, idx) => {
+    const mc = maturityColors[a.maturityLevel - 1] || '#0097a7';
+    const it = a.integration === 'Partially' ? 'tag-amber' : a.integration === 'Integrated' ? 'tag-green' : 'tag-red';
+    const card = document.createElement('div');
+    card.className = 'glow-card account-card p-5';
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.innerHTML = `
+      <div class="flex items-start justify-between mb-3">
+        <div>
+          <h3 class="font-600 text-sm" style="color:var(--text-primary)">${a.name || a.client}</h3>
+          <div class="mono-label mt-0.5" style="color:var(--text-muted);font-size:.6rem">${a.client}${a.industry ? ' · ' + a.industry : ''}${a.geo ? ' · ' + a.geo : ''}</div>
+        </div>
+        <div class="flex items-center gap-2"><span class="tag ${it}">${a.integration}</span><i class="fas fa-chevron-down text-xs transition-transform" style="color:var(--text-muted)"></i></div>
+      </div>
+      <div class="flex flex-wrap gap-1.5 mb-3">${a.tools.map(t => `<span class="tag tag-cyan">${t}</span>`).join('') || '<span class="text-xs" style="color:var(--text-muted)">No tools listed</span>'}</div>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full" style="background:${mc}"></div><span class="mono-label font-600" style="color:${mc}">${a.maturityLabel}</span></div>
+        <div class="flex items-center gap-2">
+          ${a.agentsDeployed ? '<span class="tag tag-green"><i class="fas fa-robot mr-1"></i>Agents</span>' : '<span class="tag" style="color:var(--text-muted);border-color:rgba(120,144,156,0.15);background:rgba(120,144,156,0.04)">No Agents</span>'}
+          ${a.projectId ? `<span class="tag tag-cyan"><i class="fas fa-folder mr-1"></i>${a.projectId}</span>` : ''}
+        </div>
+      </div>
+      <div class="account-detail-panel">
+        <div class="mt-4 pt-4" style="border-top:1px solid var(--border-subtle)">
+          <div class="grid grid-cols-2 gap-3 text-xs mb-3">
+            <div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">DESCRIPTION</span><p class="mt-1" style="color:var(--text-primary)">${a.description || 'N/A'}</p></div>
+            <div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">STATE</span><p class="mt-1 font-600" style="color:var(--accent-amber)">${a.state}</p></div>
+            <div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">MEASURABLE BENEFITS</span><p class="mt-1 font-600" style="color:${a.measurableBenefits.toLowerCase() === 'yes' ? 'var(--accent-green)' : 'var(--accent-amber)'}">${a.measurableBenefits}</p></div>
+            <div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">PLATFORM</span><p class="mt-1 font-600" style="color:var(--accent-cyan)">${a.platformApproval}</p></div>
+          </div>
+          ${a.functions.length ? `<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BUSINESS FUNCTIONS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.functions.map(f => `<span class="tag tag-green">${f}</span>`).join('')}</div></div>` : ''}
+          ${a.benefits.length ? `<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BENEFITS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.benefits.map(b => `<span class="tag tag-green"><i class="fas fa-check mr-1"></i>${b}</span>`).join('')}</div></div>` : ''}
+          ${a.barriers.length ? `<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BARRIERS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.barriers.map(b => `<span class="tag tag-red">${b}</span>`).join('')}</div></div>` : ''}
+          ${a.supportNeeded ? `<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">SUPPORT REQUIRED</span><p class="text-xs mt-1" style="color:var(--text-primary)">${a.supportNeeded}</p></div>` : ''}
+          ${a.agentUseCase ? `<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">AGENT USE CASE</span><p class="text-xs mt-1" style="color:var(--text-primary)">${a.agentUseCase}</p></div>` : ''}
+          <button class="mt-2 w-full py-2.5 rounded-lg text-xs font-600 transition-all hover:scale-[1.01] font-mono" style="background:var(--accent-cyan-light);border:1px solid rgba(0,151,167,0.2);color:var(--accent-cyan);letter-spacing:.04em" data-full-profile="${idx}"><i class="fas fa-expand mr-1"></i> FULL NEURAL PROFILE</button>
+        </div>
+      </div>`;
+
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('[data-full-profile]')) { openAccountModal(filtered[parseInt(e.target.closest('[data-full-profile]').dataset.fullProfile)]); return; }
+      const panel = this.querySelector('.account-detail-panel');
+      const chev = this.querySelector('.fa-chevron-down');
+      const isOpen = panel.classList.contains('open');
+      c.querySelectorAll('.account-detail-panel').forEach(p => p.classList.remove('open'));
+      c.querySelectorAll('.account-card').forEach(cd => cd.classList.remove('active'));
+      c.querySelectorAll('.fa-chevron-down').forEach(ch => ch.style.transform = '');
+      if (!isOpen) { panel.classList.add('open'); this.classList.add('active'); chev.style.transform = 'rotate(180deg)'; }
+    });
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); } });
+    c.appendChild(card);
+  });
+}
+
+// ================================================================
+//  ACCOUNT MODAL
+// ================================================================
+function openAccountModal(a) {
+  const mc = maturityColors[a.maturityLevel - 1] || '#0097a7';
+  const ml = (label, content) => `<div><div class="mono-label" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em;margin-bottom:4px">${label}</div>${content}</div>`;
+  const html = `
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">CLIENT</div><div class="text-sm font-600 mt-1">${a.client}</div></div>
+      <div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">INDUSTRY</div><div class="text-sm font-600 mt-1">${a.industry || 'N/A'}</div></div>
+      <div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">GEOGRAPHY</div><div class="text-sm font-600 mt-1">${a.geo || 'N/A'}</div></div>
+      <div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">PROJECT ID</div><div class="text-sm font-mono font-600 mt-1" style="color:var(--accent-cyan)">${a.projectId || 'N/A'}</div></div>
+    </div>
+    <div class="space-y-4">
+      ${ml('MATURITY LEVEL', `<div class="flex items-center gap-3"><div class="font-mono text-2xl font-700" style="color:${mc}">Level ${a.maturityLevel}</div><span class="tag" style="color:${mc};border-color:${mc}33;background:${mc}11">${a.maturityLabel}</span></div><div class="progress-bar-bg mt-2"><div class="progress-bar-fill" style="width:${(a.maturityLevel/5)*100}%;background:${mc}"></div></div>`)}
+      ${a.description ? ml('AI PLATFORM DESCRIPTION', `<p class="text-sm" style="color:var(--text-primary)">${a.description}</p>`) : ''}
+      ${a.techStack ? ml('TECHNOLOGY STACK', `<p class="text-sm" style="color:var(--text-primary)">${a.techStack}</p>`) : ''}
+      ${a.tools.length ? ml('AI TOOLS', `<div class="flex flex-wrap gap-1.5">${a.tools.map(t => `<span class="tag tag-cyan">${t}</span>`).join('')}</div>`) : ''}
+      ${a.functions.length ? ml('BUSINESS FUNCTIONS', `<div class="flex flex-wrap gap-1.5">${a.functions.map(f => `<span class="tag tag-green">${f}</span>`).join('')}</div>`) : ''}
+      ${ml('INTEGRATION STATUS', `<span class="tag ${a.integration === 'Partially' ? 'tag-amber' : a.integration === 'Integrated' ? 'tag-green' : 'tag-red'}">${a.integration}</span>`)}
+      ${ml('AI AGENTS', a.agentsDeployed ? `<div><span class="tag tag-green"><i class="fas fa-robot mr-1"></i>Deployed/Piloted</span>${a.agentUseCase ? `<p class="text-xs mt-2" style="color:var(--text-primary)">${a.agentUseCase}</p>` : ''}</div>` : '<span class="tag" style="color:var(--text-muted);border-color:rgba(120,144,156,0.15)">None deployed</span>')}
+      ${ml('MEASURABLE BENEFITS', `<span class="tag ${a.measurableBenefits.toLowerCase() === 'yes' ? 'tag-green' : 'tag-amber'}">${a.measurableBenefits}</span>${a.benefits.length ? `<div class="flex flex-wrap gap-1.5 mt-2">${a.benefits.map(b => `<span class="tag tag-green"><i class="fas fa-check mr-1"></i>${b}</span>`).join('')}</div>` : ''}`)}
+      ${a.barriers.length ? ml('BARRIERS', `<div class="flex flex-wrap gap-1.5">${a.barriers.map(b => `<span class="tag tag-red">${b}</span>`).join('')}</div>`) : ''}
+      ${a.supportNeeded ? ml('SUPPORT NEEDED', `<p class="text-sm" style="color:var(--text-primary)">${a.supportNeeded}</p>`) : ''}
+      ${a.categories.length ? ml('AI CATEGORIES', `<div class="flex flex-wrap gap-1.5">${a.categories.map(c => `<span class="tag tag-purple">${c}</span>`).join('')}</div>`) : ''}
+      ${a.leverageAreas.length ? ml('LEVERAGE AREAS', `<div class="flex flex-wrap gap-1.5">${a.leverageAreas.map(l => `<span class="tag tag-cyan">${l}</span>`).join('')}</div>`) : ''}
+    </div>`;
+  openModal(a.client + ' — Neural Profile', html);
+}
+
+// ================================================================
+//  RENDER: GOVERNANCE
+// ================================================================
+function renderGovernance() {
+  const map = {};
+  accounts.forEach(a => { if (a.platformApproval) map[a.platformApproval] = (map[a.platformApproval] || 0) + 1; });
+  const cfg = { 'IBM': { icon: 'fa-building', color: 'var(--accent-cyan)', bg: 'var(--accent-cyan-light)', desc: 'IBM-approved platforms' }, 'Others': { icon: 'fa-puzzle-piece', color: 'var(--accent-amber)', bg: 'var(--accent-amber-light)', desc: 'Client/Third-party platforms' }, 'Client': { icon: 'fa-user-shield', color: 'var(--accent-green)', bg: 'var(--accent-green-light)', desc: 'Client-approved platforms' } };
+  const c = document.getElementById('governance-cards');
+  c.innerHTML = '';
+  Object.entries(map).forEach(([k, count]) => {
+    const cf = cfg[k] || cfg['Others'];
+    c.innerHTML += `<div class="glow-card p-6 text-center" style="border-top:3px solid ${cf.color}"><div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style="background:${cf.bg}"><i class="fas ${cf.icon} text-xl" style="color:${cf.color}"></i></div><div class="font-mono text-3xl font-700 mb-1" style="color:${cf.color}">${count}</div><div class="text-sm font-600" style="color:var(--text-primary)">${k}</div><div class="text-xs mt-1" style="color:var(--text-muted)">${cf.desc}</div></div>`;
+  });
+}
+
+// ================================================================
+//  SCROLL REVEAL
+// ================================================================
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal-section').forEach(el => obs.observe(el));
+}
+
+// ================================================================
+//  RENDER ALL
+// ================================================================
+function renderAll() {
+  renderKPIs();
+  renderMaturityRings();
+  renderIndustryPie();
+  renderToolsMatrix();
+  renderFunctionsHeatmap();
+  renderIntegration();
+  renderBenefits();
+  renderImpactDonut();
+  renderBarriers();
+  renderLeverageRadar();
+  renderFilterTabs();
+  renderAccountCards();
+  renderGovernance();
+  initReveal();
+}
+
+// ================================================================
+//  REFRESH BUTTON
+// ================================================================
+document.getElementById('refresh-btn').addEventListener('click', async function() {
+  const icon = this.querySelector('i');
+  icon.style.animation = 'spin .6s linear';
+  try {
+    const source = await loadData();
+    document.getElementById('sync-time').textContent = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('source-badge').textContent = source.toUpperCase();
+    renderAll();
+    showToast('Data resynchronized — ' + accounts.length + ' accounts loaded from ' + source);
+  } catch (e) {
+    showToast('Refresh failed: ' + e.message);
+  }
+  icon.style.animation = '';
+});
+
+// ================================================================
+//  BOOT
+// ================================================================
+async function boot() {
+  try {
+    const source = await loadData();
+    document.getElementById('sync-time').textContent = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('source-badge').textContent = source.toUpperCase();
+    renderAll();
+
+    // Hide loader, show dashboard
+    document.getElementById('loading-screen').classList.add('hidden');
+    document.getElementById('dashboard').style.opacity = '1';
+
+    if (!accounts.length) {
+      showToast('Data loaded but 0 valid accounts found — check your CSV format');
+    } else {
+      console.log('Dashboard loaded:', accounts.length, 'accounts from', source);
+    }
+  } catch (e) {
+    document.getElementById('loading-status').textContent = 'ERROR: ' + e.message;
+    document.getElementById('loading-status').style.color = 'var(--accent-red)';
+    console.error('Boot failed:', e);
+  }
+}
+
+// Set Chart.js defaults
+Chart.defaults.font.family = "'IBM Plex Sans', sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#78909c';
+
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
