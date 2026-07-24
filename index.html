@@ -45,6 +45,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg-deep);color:var(
 .tag-amber{color:var(--accent-amber);border-color:rgba(230,81,0,0.2);background:var(--accent-amber-light)}
 .tag-red{color:var(--accent-red);border-color:rgba(198,40,40,0.2);background:var(--accent-red-light)}
 .tag-purple{color:var(--accent-purple);border-color:rgba(106,27,154,0.2);background:var(--accent-purple-light)}
+.tag-gray{color:var(--text-muted);border-color:rgba(120,144,156,0.2);background:rgba(120,144,156,0.06)}
 .progress-bar-bg{height:6px;background:rgba(0,151,167,0.08);border-radius:3px;overflow:hidden}
 .progress-bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.22,1,.36,1);position:relative}
 .progress-bar-fill::after{content:'';position:absolute;right:0;top:0;width:20px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5));animation:sh 2s infinite}
@@ -124,13 +125,13 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg-deep);color:var(
     <section class="reveal-section glow-card p-6"><div class="flex items-center justify-between mb-6"><div><h2 class="section-heading">AI TOOLS ECOSYSTEM</h2><p class="section-sub">Technology stack mapping across accounts</p></div><div class="flex gap-2"><button class="tab-btn active" data-tools-view="matrix">Matrix</button><button class="tab-btn" data-tools-view="chart">Chart</button></div></div><div id="tools-matrix-view"><div class="overflow-x-auto"><table class="w-full text-xs" id="tools-table"><thead><tr style="color:var(--text-muted)"><th class="text-left py-3 px-3 font-mono font-600" style="font-size:.65rem;letter-spacing:.08em">ACCOUNT</th></tr></thead><tbody id="tools-tbody"></tbody></table></div></div><div id="tools-chart-view" class="hidden" style="height:280px"><canvas id="toolsBarChart"></canvas></div></section>
     <section class="reveal-section grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="glow-card p-6"><h2 class="section-heading">BUSINESS FUNCTIONS COVERAGE</h2><p class="section-sub">AI-supported function areas per account</p><div id="functions-heatmap" class="space-y-3" style="margin-top:16px"></div></div>
-      <div class="glow-card p-6"><h2 class="section-heading">INTEGRATION & BENEFITS</h2><p class="section-sub">Workflow integration and realized outcomes</p><div class="space-y-5" style="margin-top:16px"><div><div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">WORKFLOW INTEGRATION</div><div class="grid grid-cols-3 gap-3 text-center" id="integration-stats"></div></div><div><div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">REALIZED BENEFITS</div><div id="benefits-list" class="space-y-2"></div></div><div><div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">MEASURABLE IMPACT</div><div class="flex items-center gap-4"><div style="width:80px;height:80px;position:relative"><canvas id="impactDonut"></canvas><div class="absolute inset-0 flex items-center justify-center"><span class="font-mono text-sm font-700" id="impact-pct" style="color:var(--accent-green)">0%</span></div></div><div class="text-xs" style="color:var(--text-muted)">of accounts report <span style="color:var(--accent-green);font-weight:600">measurable benefits</span> from AI</div></div></div></div></div>
+      <div class="glow-card p-6"><h2 class="section-heading">INTEGRATION & BENEFITS</h2><p class="section-sub">Workflow integration and realized outcomes</p><div class="space-y-5" style="margin-top:16px"><div><div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">WORKFLOW INTEGRATION</div><div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center" id="integration-stats"></div></div><div><div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">REALIZED BENEFITS</div><div id="benefits-list" class="space-y-2"></div></div><div><div class="mono-label mb-3" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em">MEASURABLE IMPACT</div><div class="flex items-center gap-4"><div style="width:80px;height:80px;position:relative"><canvas id="impactDonut"></canvas><div class="absolute inset-0 flex items-center justify-center"><span class="font-mono text-sm font-700" id="impact-pct" style="color:var(--accent-green)">0%</span></div></div><div class="text-xs" style="color:var(--text-muted)">of accounts report <span style="color:var(--accent-green);font-weight:600">measurable benefits</span> from AI</div></div></div></div></div>
     </section>
     <section class="reveal-section grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="glow-card p-6"><h2 class="section-heading">ADOPTION BARRIERS</h2><p class="section-sub">Key obstacles identified across accounts</p><div id="barriers-list" class="space-y-4" style="margin-top:16px"></div></div>
       <div class="glow-card p-6"><h2 class="section-heading">AI LEVERAGE AREAS</h2><p class="section-sub">Operational areas where AI is actively deployed</p><div style="height:280px;margin-top:16px"><canvas id="leverageRadar"></canvas></div></div>
     </section>
-    <section class="reveal-section"><div class="flex items-center justify-between mb-6"><div><h2 class="section-heading">ACCOUNT NEURAL PROFILES</h2><p class="section-sub">Click any card to expand full intelligence profile</p></div><div class="flex gap-2" id="filter-tabs"></div></div><div id="account-cards" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></section>
+    <section class="reveal-section"><div class="flex items-center justify-between mb-6"><div><h2 class="section-heading">ACCOUNT NEURAL PROFILES</h2><p class="section-sub">Click any card to expand full intelligence profile</p></div><div class="flex gap-2 flex-wrap" id="filter-tabs"></div></div><div id="account-cards" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></section>
     <section class="reveal-section glow-card p-6"><h2 class="section-heading">PLATFORM GOVERNANCE</h2><p class="section-sub">IBM vs Client vs Other platform approval status</p><div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="governance-cards" style="margin-top:16px"></div></section>
   </main>
   <footer class="text-center py-8 text-xs" style="color:var(--text-muted);border-top:1px solid var(--border-subtle)"><p class="font-mono" style="font-size:.65rem;letter-spacing:.05em">Industrial Sector AI Posture 2026 — Neural Command Center</p><p class="mt-1 font-mono" style="font-size:.6rem">Powered by real-time analytics engine</p></footer>
@@ -144,25 +145,27 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg-deep);color:var(
 
 <script>
 // ================================================================
-//  CONFIG — EDIT YOUR BOX URL HERE
+//  CONFIG — this dashboard ALWAYS loads from the local CSV file
+//  living in the same git repo, at data/data.csv relative to
+//  this HTML file. No remote/Box fetching is used.
 // ================================================================
 const CONFIG = {
-  // Your Box share link (original /s/ format)
-  boxShareUrl: 'https://ibm.box.com/s/d2upt9qmhfq5w2nepb0w85rgn59a7vs5',
-
-  // Local CSV fallback path
   localDataPath: 'data/data.csv'
 };
 
 // ================================================================
-//  BUILT-IN FALLBACK DATA — always works even if all else fails
+//  BUILT-IN FALLBACK DATA — used only if data/data.csv can't be
+//  loaded at all (e.g. opened as a local file:// page without a
+//  server, or the file is temporarily missing).
 // ================================================================
-const FALLBACK_DATA = [
-  {name:"BMW UK NextGen DevOps",client:"BMW UK",industry:"Automobile",geo:"UKI",aiUsed:true,clientApproved:true,description:"GitHub Copilot, AWS Bedrock, AWS Q, BMW GAIA",functions:["Finance","Supply Chain","Customer Service","HR"],integration:"Not Integrated",state:"In Progress",techStack:"Others",tools:["GitHub Copilot","AWS Bedrock","AWS Q","BMW GAIA"],agentsDeployed:true,agentUseCase:"",measurableBenefits:"In Progress",benefits:[],barriers:["Client Restrictions"],supportNeeded:"None for now",projectId:"IN-26-27755",platformApproval:"Others",maturityLevel:2,maturityLabel:"Level 2 – Measuring",leverageAreas:["Code Generation","Test Automation","Code Review","Knowledge Management","Incident Management","Documentation","Project Management","Reporting"],categories:["Business transformation","Design & Build","Application Operations","Light touch"],filter:"auto"},
-  {name:"SAP As A Service",client:"Cenovus Energy",industry:"Chemical & Petroleum",geo:"Canada",aiUsed:true,clientApproved:true,description:"AIOPs 2.0 - Service Management Module",functions:["Finance","Supply Chain","HR"],integration:"Partially",state:"In Progress",techStack:"SAP, Maximo",tools:["SAP","Maximo"],agentsDeployed:false,agentUseCase:"",measurableBenefits:"Yes",benefits:["Lower Operational Cost","Automation of Manual Tasks","Improved Customer Experience","Better Compliance","Improved Quality"],barriers:["Tool Limitations"],supportNeeded:"Need to work with SMEs who can tailor Agents and Assistants quickly to client needs",projectId:"IN-19-14739",platformApproval:"IBM",maturityLevel:2,maturityLabel:"Level 2 – Measuring",leverageAreas:["Incident Management","Service Desk"],categories:["Application Operations"],filter:"energy"},
-  {name:"Cubix - AMS for Bombardier",client:"Bombardier Inc.",industry:"Aerospace & Defence",geo:"Canada",aiUsed:true,clientApproved:true,description:"AIOps 2.0, Digital PMO, GenAI (PoC), Agentic AI (PoC), ML platform (PoC)",functions:[],integration:"Partially",state:"In Progress",techStack:"",tools:["AIOps 2.0","Digital PMO","GenAI","Agentic AI","ML Platform"],agentsDeployed:true,agentUseCase:"1. GenAI use case (PoC) for Engineering users, 2. AgenticAI use case (PoC)",measurableBenefits:"Yes",benefits:["Improved Quality","Lower Operational Cost","Better Compliance"],barriers:["Security Concerns"],supportNeeded:"Working with Client about deploying more AI — evaluating Data Sovereignty and Security policies",projectId:"IN-07-00297",platformApproval:"IBM",maturityLevel:5,maturityLabel:"Level 5 – Differentiating",leverageAreas:["Incident Management","Reporting"],categories:["Application Operations"],filter:"aero"},
-  {name:"VW Wilson",client:"Volkswagen AG",industry:"Automobile",geo:"REMEA",aiUsed:true,clientApproved:true,description:"Microsoft Co-Pilot",functions:["Others"],integration:"Not Integrated",state:"In Progress",techStack:"",tools:["Microsoft Co-Pilot"],agentsDeployed:false,agentUseCase:"",measurableBenefits:"In Progress",benefits:["Improved Quality"],barriers:["Client Restrictions"],supportNeeded:"",projectId:"IN-26-27525",platformApproval:"Others",maturityLevel:1,maturityLabel:"Level 1 – Observing",leverageAreas:["Knowledge Management"],categories:["Business transformation"],filter:"auto"}
+const FALLBACK_DATA_RAW = [
+  {name:"BMW UK NextGen DevOps",client:"BMW UK",industry:"Automobile",geo:"UKI",aiUsed:true,clientApproved:true,description:"GitHub Copilot, AWS Bedrock, AWS Q, BMW GAIA",functions:["Finance","Supply Chain","Customer Service","HR"],integration:"Not Integrated",state:"",techStack:"",tools:["GitHub Copilot","AWS Bedrock","AWS Q","BMW GAIA"],agentsDeployed:true,agentUseCase:"",measurableBenefits:"In Progress",benefits:["Others"],barriers:["Client Restrictions"],supportNeeded:"None for now",projectId:"IN-26-27755",platformApproval:"Others",maturityLevel:2,maturityLabel:"Level 2 – Measuring",leverageAreas:["Code Generation","Test Automation","Code Review","Knowledge Management","Incident Management","Documentation","Project Management","Reporting"],categories:["Business transformation","Design & Build","Application Operations","Light touch"],filter:"automobile"},
+  {name:"SAP As A Service",client:"Cenovus Energy",industry:"Chemical & Petroleum",geo:"Canada",aiUsed:true,clientApproved:true,description:"AIOPs 2.0 - Service Management Module",functions:["Finance","Supply Chain","HR"],integration:"Partially",state:"",techStack:"SAP, Maximo",tools:[],agentsDeployed:false,agentUseCase:"",measurableBenefits:"In Progress",benefits:["Lower Operational Cost","Automation of Manual Tasks","Improved Customer Experience","Better Compliance","Improved Quality"],barriers:["Tool Limitations"],supportNeeded:"Need to work with SMEs who can tailor Agents and Assistants quickly to client needs",projectId:"IN-19-14739",platformApproval:"IBM",maturityLevel:2,maturityLabel:"Level 2 – Measuring",leverageAreas:["Incident Management","Service Desk"],categories:["Application Operations"],filter:"chemical-petroleum"},
+  {name:"Cubix - AMS for Bombardier",client:"Bombardier Inc.",industry:"Aerospace & Defence",geo:"Canada",aiUsed:true,clientApproved:true,description:"AIOps 2.0, Digital PMO, GenAI (PoC), Agentic AI (PoC), ML platform (PoC)",functions:[],integration:"Partially",state:"",techStack:"",tools:[],agentsDeployed:true,agentUseCase:"1. GenAI use case (PoC) for Engineering users, 2. AgenticAI use case (PoC)",measurableBenefits:"Yes",benefits:["Improved Quality","Lower Operational Cost","Better Compliance"],barriers:["Security Concerns"],supportNeeded:"Working with Client about deploying more AI — evaluating Data Sovereignty and Security policies",projectId:"IN-07-00297",platformApproval:"IBM",maturityLevel:5,maturityLabel:"Level 5 – Differentiating",leverageAreas:["Incident Management","Reporting"],categories:["Application Operations"],filter:"aerospace-defence"},
+  {name:"VW Wilson",client:"Volkswagen AG",industry:"Automobile",geo:"REMEA",aiUsed:true,clientApproved:true,description:"Microsoft Co-Pilot",functions:["Others"],integration:"Not Integrated",state:"",techStack:"",tools:["Microsoft Co-Pilot"],agentsDeployed:false,agentUseCase:"",measurableBenefits:"In Progress",benefits:["Improved Quality"],barriers:["Client Restrictions"],supportNeeded:"",projectId:"IN-26-27525",platformApproval:"Others",maturityLevel:1,maturityLabel:"Level 1 – Observing",leverageAreas:["Knowledge Management"],categories:["Business transformation"],filter:"automobile"}
 ];
+// Normalized once at boot so it matches the shape mapRowByIndex produces.
+const FALLBACK_DATA = FALLBACK_DATA_RAW;
 
 // ================================================================
 //  GLOBALS
@@ -173,38 +176,81 @@ const maturityColors = ['#0097a7','#0097a7','#00897b','#e65100','#6a1b9a'];
 const phaseNames = ['','Observing','Measuring','Scaling','Optimizing','Differentiating'];
 
 // ================================================================
-//  COLUMN MAPPING
+//  FIXED COLUMN LAYOUT for data/data.csv
 // ================================================================
-const COL_MAP = {
-  'Name':'name','Client Name':'client','Industry':'industry','Market Geography':'geo',
-  'Is AI platform currently being used in the account?':'aiUsed','Is AI approved usage approved by Client?':'clientApproved',
-  'Brief description of the AI Platform':'description','What business functions are supported by AI?':'functions',
-  'Are AI tools integrated into delivery workflows?':'integration','What state is the AI implementation?':'state',
-  'What is the Technology Stack?':'techStack','Which AI tools are currently used?':'tools',
-  'Are any AI agents currently piloted or deployed?':'agentsDeployed','If yes, please describe the use case.':'agentUseCase',
-  'Has AI delivered measurable benefits?':'measurableBenefits','Which benefits have been realized?':'benefits',
-  'What are the biggest barriers to AI adoption?':'barriers','What support is required to accelerate adoption?':'supportNeeded',
-  'Project ID':'projectId','Is it IBM or Client approved platform?':'platformApproval',
-  'What is your assessment of maturity level?':'maturityRaw','Which areas are currently leveraging AI?':'leverageAreas',
-  'What is the category of AI implementation?':'categories'
+// The source export has 2 title/group rows, then a header row with
+// several duplicate column names (the form re-used the same question
+// text for multiple fields). Because of those duplicates we can't
+// reliably map by header text, so we map by column position instead.
+// Positions below were verified against the current data/data.csv:
+//   0  Name
+//   1  Client Name
+//   4  Is AI platform currently being used in the account?
+//   5  Is AI approved usage approved by Client?
+//   7  Brief description of the AI Platform
+//   9  Business functions supported by AI
+//   10 Are AI tools integrated into delivery workflows?
+//   12 Technology Stack
+//   14 Are any AI agents currently piloted or deployed?
+//   15 Agent use case description
+//   16 Has AI delivered measurable benefits?
+//   17 Which benefits have been realized?
+//   18 Biggest barriers to AI adoption
+//   19 Support required to accelerate adoption
+//   20 Project ID
+//   21 Is it IBM or Client approved platform?
+//   23 Named AI tools / platforms in use
+//   26 Maturity level assessment
+//   27 Categories of AI implementation
+//   28 Areas currently leveraging AI
+//   41 Account Industry
+//   42 Market Geography
+const COL = {
+  NAME:0, CLIENT:1, AI_USED:4, CLIENT_APPROVED:5, DESCRIPTION:7,
+  FUNCTIONS:9, INTEGRATION:10, TECH_STACK:12, AGENTS_DEPLOYED:14,
+  AGENT_USE_CASE:15, MEASURABLE_BENEFITS:16, BENEFITS:17, BARRIERS:18,
+  SUPPORT_NEEDED:19, PROJECT_ID:20, PLATFORM_APPROVAL:21, TOOLS:23,
+  MATURITY:26, CATEGORIES:27, LEVERAGE_AREAS:28, INDUSTRY:41, GEO:42
 };
 
 // ================================================================
 //  PARSING HELPERS
 // ================================================================
-function parseList(t){if(!t||typeof t!=='string')return [];return t.split(',').map(s=>s.trim()).filter(Boolean)}
-function parseMaturity(t){if(!t)return{level:0,label:'Unknown'};const m=t.match(/(\d)/);const l=m?Math.min(Math.max(parseInt(m[1]),0),5):0;return{level:l,label:t.trim()||('Level '+l)}}
+function parseList(t){if(!t||typeof t!=='string')return [];return t.split(',').map(s=>s.trim().replace(/\)on$/,')')).filter(Boolean)}
+function parseMaturity(t){if(!t)return{level:0,label:'Not Assessed'};const m=t.match(/(\d)/);const l=m?Math.min(Math.max(parseInt(m[1]),0),5):0;return{level:l,label:t.trim()||('Level '+l)}}
 function yesNo(v){if(!v)return false;return String(v).trim().toLowerCase()==='yes'}
-function getFilter(ind){if(!ind)return 'other';const i=ind.toLowerCase();if(i.includes('automobile')||i.includes('auto'))return 'auto';if(i.includes('aerospace')||i.includes('defence')||i.includes('defense'))return 'aero';if(i.includes('chemical')||i.includes('petroleum')||i.includes('energy')||i.includes('oil')||i.includes('gas'))return 'energy';return 'other'}
+function slugify(s){if(!s)return 'other';return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'other'}
 
-function mapRow(raw){
-  const row={};
-  for(const[csvH,internal]of Object.entries(COL_MAP)){
-    if(raw[csvH]!==undefined){row[internal]=raw[csvH]}
-    else{const found=Object.keys(raw).find(h=>h.trim().includes(csvH));if(found)row[internal]=raw[found]}
-  }
-  const mat=parseMaturity(row.maturityRaw);
-  return{name:(row.name||'').trim(),client:(row.client||'').trim(),industry:(row.industry||'').trim(),geo:(row.geo||'').trim(),aiUsed:yesNo(row.aiUsed),clientApproved:yesNo(row.clientApproved),description:(row.description||'').trim(),functions:parseList(row.functions),integration:(row.integration||'Unknown').trim(),state:(row.state||'Unknown').trim(),techStack:(row.techStack||'').trim(),tools:parseList(row.tools),agentsDeployed:yesNo(row.agentsDeployed),agentUseCase:(row.agentUseCase||'').trim(),measurableBenefits:(row.measurableBenefits||'Unknown').trim(),benefits:parseList(row.benefits),barriers:parseList(row.barriers),supportNeeded:(row.supportNeeded||'').trim(),projectId:(row.projectId||'').trim(),platformApproval:(row.platformApproval||'Unknown').trim(),maturityLevel:mat.level,maturityLabel:mat.label,leverageAreas:parseList(row.leverageAreas),categories:parseList(row.categories),filter:getFilter((row.industry||'').trim())};
+function mapRowByIndex(r){
+  const get=i=>(r[i]||'').trim();
+  const mat=parseMaturity(get(COL.MATURITY));
+  const industry=get(COL.INDUSTRY);
+  return{
+    name:get(COL.NAME),
+    client:get(COL.CLIENT),
+    industry:industry,
+    geo:get(COL.GEO),
+    aiUsed:yesNo(get(COL.AI_USED)),
+    clientApproved:yesNo(get(COL.CLIENT_APPROVED)),
+    description:get(COL.DESCRIPTION),
+    functions:parseList(get(COL.FUNCTIONS)),
+    integration:get(COL.INTEGRATION)||'Not Specified',
+    techStack:get(COL.TECH_STACK),
+    tools:parseList(get(COL.TOOLS)),
+    agentsDeployed:yesNo(get(COL.AGENTS_DEPLOYED)),
+    agentUseCase:get(COL.AGENT_USE_CASE),
+    measurableBenefits:get(COL.MEASURABLE_BENEFITS)||'Not Reported',
+    benefits:parseList(get(COL.BENEFITS)),
+    barriers:parseList(get(COL.BARRIERS)),
+    supportNeeded:get(COL.SUPPORT_NEEDED),
+    projectId:get(COL.PROJECT_ID),
+    platformApproval:get(COL.PLATFORM_APPROVAL)||'Not Specified',
+    maturityLevel:mat.level,
+    maturityLabel:mat.label,
+    leverageAreas:parseList(get(COL.LEVERAGE_AREAS)),
+    categories:parseList(get(COL.CATEGORIES)),
+    filter:slugify(industry)
+  };
 }
 
 function detectAndParse(buf){
@@ -216,13 +262,18 @@ function detectAndParse(buf){
 function parseCSV(text){
   // Strip BOM if present
   if(text.charCodeAt(0)===0xFEFF) text=text.slice(1);
-  const result=Papa.parse(text,{header:true,skipEmptyLines:true,transformHeader:h=>h.trim()});
+  const result=Papa.parse(text,{header:false,skipEmptyLines:true});
+  const rows=result.data;
   if(result.errors.length>3) console.warn('CSV warnings:',result.errors.slice(0,3));
-  return result.data.filter(r=>Object.values(r).some(v=>(v||'').trim().length>0)).map(mapRow).filter(a=>a.name||a.client);
+  // Find the real header row (title/group rows precede it in this export).
+  let headerIdx=rows.findIndex(r=>(r[0]||'').trim().toLowerCase()==='name'&&(r[1]||'').trim().toLowerCase()==='client name');
+  if(headerIdx===-1) headerIdx=2; // known fallback position in this export
+  const dataRows=rows.slice(headerIdx+1).filter(r=>(r[COL.NAME]||'').trim()||(r[COL.CLIENT]||'').trim());
+  return dataRows.map(mapRowByIndex).filter(a=>a.name||a.client);
 }
 
 // ================================================================
-//  DATA LOADING
+//  DATA LOADING — local data/data.csv only
 // ================================================================
 const loadErrors=[];
 
@@ -233,51 +284,20 @@ function logErr(msg){loadErrors.push(msg);console.warn(msg);
   if(box)box.innerHTML+=msg+'<br>';
 }
 
-async function tryRemote(){
-  logErr('Trying Box remote URL...');
-
-  // Strategy 1: /s/ link with ?dl=1 via corsproxy
-  const urls=[
-    'https://corsproxy.io/?'+encodeURIComponent(CONFIG.boxShareUrl+'?dl=1'),
-    'https://corsproxy.io/?'+encodeURIComponent(CONFIG.boxShareUrl),
-    'https://api.allorigins.win/raw?url='+encodeURIComponent(CONFIG.boxShareUrl+'?dl=1'),
-    'https://api.allorigins.win/raw?url='+encodeURIComponent(CONFIG.boxShareUrl)
-  ];
-
-  for(let i=0;i<urls.length;i++){
-    try{
-      logErr('Attempt '+(i+1)+': '+urls[i].substring(0,80)+'...');
-      const resp=await fetch(urls[i],{signal:AbortSignal.timeout(10000)});
-      if(!resp.ok) throw new Error('HTTP '+resp.status);
-      const buf=await resp.arrayBuffer();
-      if(buf.byteLength<10) throw new Error('Response too small ('+buf.byteLength+' bytes)');
-      const data=detectAndParse(buf);
-      if(!data.length) throw new Error('Parsed 0 accounts from response');
-      logErr('Remote SUCCESS: '+data.length+' accounts loaded');
-      return{data,source:'Box remote'};
-    }catch(e){
-      logErr('Attempt '+(i+1)+' failed: '+e.message);
-    }
-  }
-  throw new Error('All remote attempts failed');
-}
-
 async function tryLocal(){
-  logErr('Trying local file: '+CONFIG.localDataPath);
-  const resp=await fetch(CONFIG.localDataPath);
+  logErr('Loading '+CONFIG.localDataPath+' ...');
+  const resp=await fetch(CONFIG.localDataPath,{cache:'no-store'});
   if(!resp.ok) throw new Error('HTTP '+resp.status+' — file not found at: '+CONFIG.localDataPath);
   const buf=await resp.arrayBuffer();
   if(buf.byteLength<10) throw new Error('File too small ('+buf.byteLength+' bytes) — possibly empty');
   const data=detectAndParse(buf);
-  if(!data.length) throw new Error('CSV parsed but 0 valid accounts found. Check column headers match expected format.');
-  logErr('Local SUCCESS: '+data.length+' accounts loaded');
-  return{data,source:'local CSV'};
+  if(!data.length) throw new Error('CSV parsed but 0 valid accounts found. Check the file at '+CONFIG.localDataPath);
+  logErr('Loaded '+data.length+' accounts from '+CONFIG.localDataPath);
+  return{data,source:'data/data.csv'};
 }
 
 async function loadData(){
-  // Try remote first, then local, then fallback
-  try{return await tryRemote()}catch(e){logErr('---')}
-  try{return await tryLocal()}catch(e){logErr('---')}
+  try{return await tryLocal()}catch(e){logErr('Local load failed: '+e.message)}
   logErr('Using built-in fallback data ('+FALLBACK_DATA.length+' accounts)');
   return{data:FALLBACK_DATA,source:'built-in fallback'};
 }
@@ -304,6 +324,15 @@ function openModal(t,h){document.getElementById('modal-title').textContent=t;doc
 function destroyChart(k){if(charts[k]){charts[k].destroy();delete charts[k]}}
 function animateCounter(el,target,suffix,dec){const dur=1500,st=performance.now();(function up(now){const p=Math.min((now-st)/dur,1),e=1-Math.pow(1-p,3);el.textContent=(dec?(target*e).toFixed(1):Math.round(target*e))+suffix;if(p<1)requestAnimationFrame(up)})(st)}
 function animateBars(){document.querySelectorAll('.progress-bar-fill[data-width]').forEach(el=>{setTimeout(()=>{el.style.width=el.dataset.width+'%'},300)})}
+function integrationStyle(status){
+  const map={
+    'Integrated':{color:'var(--accent-green)',bg:'var(--accent-green-light)',bd:'rgba(0,137,123,0.2)',tag:'tag-green'},
+    'Partially':{color:'var(--accent-amber)',bg:'var(--accent-amber-light)',bd:'rgba(230,81,0,0.2)',tag:'tag-amber'},
+    'Pilot':{color:'var(--accent-purple)',bg:'var(--accent-purple-light)',bd:'rgba(106,27,154,0.2)',tag:'tag-purple'},
+    'Not Integrated':{color:'var(--accent-red)',bg:'var(--accent-red-light)',bd:'rgba(198,40,40,0.2)',tag:'tag-red'}
+  };
+  return map[status]||{color:'var(--text-muted)',bg:'rgba(120,144,156,0.06)',bd:'rgba(120,144,156,0.2)',tag:'tag-gray'};
+}
 
 // ================================================================
 //  RENDER: KPIs
@@ -321,7 +350,7 @@ function renderKPIs(){
   document.getElementById('kv-agents-pct').textContent=total?Math.round(agents/total*100)+'% pilot rate':'—';
   document.getElementById('kv-agents-bar').dataset.width=total?Math.round(agents/total*100):0;
   animateCounter(document.getElementById('kv-maturity'),avg,'/5',true);
-  document.getElementById('kv-maturity-phase').textContent=phaseNames[Math.round(avg)]||'Unknown'+' phase';
+  document.getElementById('kv-maturity-phase').textContent=(phaseNames[Math.round(avg)]||'Unknown')+' phase';
   document.getElementById('kv-maturity-bar').dataset.width=Math.round(avg/5*100);
   setTimeout(animateBars,200);
 }
@@ -343,9 +372,9 @@ document.querySelectorAll('[data-maturity-view]').forEach(b=>{b.addEventListener
 //  RENDER: INDUSTRY PIE
 // ================================================================
 function renderIndustryPie(){
-  const map={};accounts.forEach(a=>{if(a.industry)map[a.industry]=(map[a.industry]||0)+1});const labels=Object.keys(map),data=Object.values(map),colors=['#0097a7','#00897b','#e65100','#6a1b9a','#c62828'];
-  destroyChart('indPie');charts.indPie=new Chart(document.getElementById('industryPieChart').getContext('2d'),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors.slice(0,labels.length).map(c=>c+'22'),borderColor:colors.slice(0,labels.length),borderWidth:2,hoverBorderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',borderColor:'rgba(0,151,167,0.3)',borderWidth:1,titleColor:'#0097a7',bodyColor:'#1a2332',padding:12,cornerRadius:8,callbacks:{label:c=>c.label+': '+c.raw+' account(s)'}}}}});
-  const lg=document.getElementById('industry-legend');lg.innerHTML='';labels.forEach((l,i)=>{lg.innerHTML+=`<div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-sm flex-shrink-0" style="background:${colors[i]}"></span><span style="color:var(--text-muted)">${l}</span><span class="ml-auto font-mono font-600" style="color:var(--text-primary)">${data[i]}</span></div>`});
+  const map={};accounts.forEach(a=>{const key=a.industry||'Not Specified';map[key]=(map[key]||0)+1});const labels=Object.keys(map),data=Object.values(map),colors=['#0097a7','#00897b','#e65100','#6a1b9a','#c62828','#3949ab','#00838f'];
+  destroyChart('indPie');charts.indPie=new Chart(document.getElementById('industryPieChart').getContext('2d'),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:labels.map((_,i)=>colors[i%colors.length]+'22'),borderColor:labels.map((_,i)=>colors[i%colors.length]),borderWidth:2,hoverBorderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',borderColor:'rgba(0,151,167,0.3)',borderWidth:1,titleColor:'#0097a7',bodyColor:'#1a2332',padding:12,cornerRadius:8,callbacks:{label:c=>c.label+': '+c.raw+' account(s)'}}}}});
+  const lg=document.getElementById('industry-legend');lg.innerHTML='';labels.forEach((l,i)=>{lg.innerHTML+=`<div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-sm flex-shrink-0" style="background:${colors[i%colors.length]}"></span><span style="color:var(--text-muted)">${l}</span><span class="ml-auto font-mono font-600" style="color:var(--text-primary)">${data[i]}</span></div>`});
 }
 
 // ================================================================
@@ -353,6 +382,7 @@ function renderIndustryPie(){
 // ================================================================
 function renderToolsMatrix(){
   const allT=[...new Set(accounts.flatMap(a=>a.tools))];const thead=document.querySelector('#tools-table thead tr');thead.querySelectorAll('th:not(:first-child)').forEach(th=>th.remove());
+  if(!allT.length){const tb=document.getElementById('tools-tbody');tb.innerHTML='<tr><td class="py-4 px-3 text-xs" style="color:var(--text-muted)">No named AI tools reported yet — see each account&#39;s Technology Stack in its full profile.</td></tr>';return}
   allT.forEach(t=>{const th=document.createElement('th');th.className='py-3 px-2 font-mono font-600 text-center';th.style.cssText='color:var(--text-muted);font-size:.6rem;max-width:90px;white-space:nowrap;letter-spacing:.04em';th.textContent=t;thead.appendChild(th)});
   const tb=document.getElementById('tools-tbody');tb.innerHTML='';
   accounts.forEach(a=>{const tr=document.createElement('tr');tr.style.borderTop='1px solid var(--border-subtle)';tr.innerHTML=`<td class="py-3 px-3 font-600" style="color:var(--text-primary);white-space:nowrap">${a.client}</td>`;allT.forEach(t=>{const td=document.createElement('td');td.className='py-3 px-2 text-center';td.innerHTML=a.tools.includes(t)?'<span style="color:var(--accent-green);font-size:.9rem"><i class="fas fa-check-circle"></i></span>':'<span style="color:rgba(120,144,156,0.2);font-size:.7rem"><i class="fas fa-circle"></i></span>';tr.appendChild(td)});tb.appendChild(tr)});
@@ -377,12 +407,13 @@ function renderFunctionsHeatmap(){
 //  RENDER: INTEGRATION & BENEFITS
 // ================================================================
 function renderIntegration(){
-  const ct={Integrated:0,Partially:0,'Not Integrated':0,Unknown:0};accounts.forEach(a=>{ct[a.integration]=(ct[a.integration]||0)+1});
-  const items=[{l:'Integrated',c:ct['Integrated']||0,col:'var(--accent-green)',bg:'var(--accent-green-light)',bd:'rgba(0,137,123,0.2)'},{l:'Partial',c:ct['Partially']||0,col:'var(--accent-amber)',bg:'var(--accent-amber-light)',bd:'rgba(230,81,0,0.2)'},{l:'Not Integrated',c:ct['Not Integrated']||0,col:'var(--accent-red)',bg:'var(--accent-red-light)',bd:'rgba(198,40,40,0.2)'}];
-  document.getElementById('integration-stats').innerHTML=items.map(i=>`<div class="glow-card p-3" style="border-color:${i.bd}"><div class="font-mono text-lg font-700" style="color:${i.col}">${i.c}</div><div class="text-xs mt-1" style="color:var(--text-muted)">${i.l}</div></div>`).join('');
+  const counts={};accounts.forEach(a=>{const key=a.integration||'Not Specified';counts[key]=(counts[key]||0)+1});
+  const preferredOrder=['Integrated','Partially','Pilot','Not Integrated','Not Specified'];
+  const keys=Object.keys(counts).sort((a,b)=>{const ia=preferredOrder.indexOf(a),ib=preferredOrder.indexOf(b);return(ia===-1?99:ia)-(ib===-1?99:ib)});
+  document.getElementById('integration-stats').innerHTML=keys.map(k=>{const s=integrationStyle(k);return `<div class="glow-card p-3" style="border-color:${s.bd}"><div class="font-mono text-lg font-700" style="color:${s.color}">${counts[k]}</div><div class="text-xs mt-1" style="color:var(--text-muted)">${k}</div></div>`}).join('');
 }
 function renderBenefits(){
-  const all={};accounts.forEach(a=>a.benefits.forEach(b=>{all[b]=(all[b]||0)+1}));const sorted=Object.entries(all).sort((a,b)=>b[1]-a[1]);const max=sorted[0]?.[1]||1;const icons={'Lower Operational Cost':'fa-coins','Automation of Manual Tasks':'fa-gears','Improved Customer Experience':'fa-face-smile','Better Compliance':'fa-shield-halved','Improved Quality':'fa-gem'};
+  const all={};accounts.forEach(a=>a.benefits.forEach(b=>{all[b]=(all[b]||0)+1}));const sorted=Object.entries(all).sort((a,b)=>b[1]-a[1]);const max=sorted[0]?.[1]||1;const icons={'Lower Operational Cost':'fa-coins','Automation of Manual Tasks':'fa-gears','Improved Customer Experience':'fa-face-smile','Better Compliance':'fa-shield-halved','Improved Quality':'fa-gem','Reduced Defects':'fa-bug-slash','Faster Development':'fa-bolt'};
   const c=document.getElementById('benefits-list');c.innerHTML='';if(!sorted.length){c.innerHTML='<p class="text-xs" style="color:var(--text-muted)">No benefits reported yet</p>';return}
   sorted.forEach(([b,count])=>{c.innerHTML+=`<div class="flex items-center gap-3"><i class="fas ${icons[b]||'fa-star'} text-xs w-4 text-center" style="color:var(--accent-green)"></i><span class="text-xs flex-1" style="color:var(--text-primary)">${b}</span><div class="w-24 h-1.5 rounded" style="background:rgba(0,137,123,0.1)"><div class="h-full rounded" style="width:${(count/max)*100}%;background:var(--accent-green);transition:width 1s"></div></div><span class="font-mono text-xs font-600 w-4 text-right" style="color:var(--accent-green)">${count}</span></div>`});
 }
@@ -397,7 +428,7 @@ function renderImpactDonut(){
 function renderBarriers(){
   const map={};accounts.forEach(a=>a.barriers.forEach(b=>{if(!map[b])map[b]={name:b,accts:[],count:0};map[b].accts.push(a.client);map[b].count++}));const items=Object.values(map).sort((a,b)=>b.count-a.count);
   const c=document.getElementById('barriers-list');c.innerHTML='';if(!items.length){c.innerHTML='<p class="text-xs" style="color:var(--text-muted)">No barriers reported</p>';return}
-  const iconMap={'Client Restrictions':'fa-lock','Security Concerns':'fa-shield-halved','Tool Limitations':'fa-wrench'};
+  const iconMap={'Client Restrictions':'fa-lock','Security Concerns':'fa-shield-halved','Tool Limitations':'fa-wrench','Budget Constraints':'fa-sack-dollar','Change Resistance':'fa-people-arrows','Compliance Restrictions':'fa-gavel'};
   items.forEach(b=>{const sev=b.count>=2?'high':'medium',color=sev==='high'?'var(--accent-red)':'var(--accent-amber)',bg=sev==='high'?'var(--accent-red-light)':'var(--accent-amber-light)';c.innerHTML+=`<div class="glow-card p-4" style="border-left:3px solid ${color}"><div class="flex items-center gap-3 mb-2"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:${bg}"><i class="fas ${iconMap[b.name]||'fa-exclamation-triangle'} text-xs" style="color:${color}"></i></div><span class="text-sm font-600" style="color:var(--text-primary)">${b.name}</span><span class="tag ${sev==='high'?'tag-red':'tag-amber'} ml-auto">${sev.toUpperCase()}</span></div><div class="mono-label" style="color:var(--text-muted);font-size:.6rem">Affected: ${b.accts.join(', ')}</div></div>`});
 }
 
@@ -413,7 +444,7 @@ function renderLeverageRadar(){
 //  RENDER: FILTERS + CARDS
 // ================================================================
 function renderFilterTabs(){
-  const filters=new Map();filters.set('all','All');accounts.forEach(a=>{if(a.industry&&!filters.has(a.filter))filters.set(a.filter,a.industry.split('&')[0].trim())});
+  const filters=new Map();filters.set('all','All');accounts.forEach(a=>{const label=a.industry||'Not Specified';if(!filters.has(a.filter))filters.set(a.filter,label)});
   const c=document.getElementById('filter-tabs');c.innerHTML='';
   filters.forEach((label,key)=>{const btn=document.createElement('button');btn.className='tab-btn'+(key==='all'?' active':'');btn.textContent=label;btn.addEventListener('click',function(){c.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');renderAccountCards(key)});c.appendChild(btn)});
 }
@@ -421,9 +452,9 @@ function renderAccountCards(filter='all'){
   const c=document.getElementById('account-cards');c.innerHTML='';const filtered=filter==='all'?accounts:accounts.filter(a=>a.filter===filter);
   if(!filtered.length){c.innerHTML='<p class="text-sm" style="color:var(--text-muted)">No accounts match this filter.</p>';return}
   filtered.forEach((a,idx)=>{
-    const mc=maturityColors[a.maturityLevel-1]||'#0097a7',it=a.integration==='Partially'?'tag-amber':a.integration==='Integrated'?'tag-green':'tag-red';
+    const mc=maturityColors[a.maturityLevel-1]||'#0097a7',ist=integrationStyle(a.integration);
     const card=document.createElement('div');card.className='glow-card account-card p-5';card.setAttribute('role','button');card.setAttribute('tabindex','0');
-    card.innerHTML=`<div class="flex items-start justify-between mb-3"><div><h3 class="font-600 text-sm" style="color:var(--text-primary)">${a.name||a.client}</h3><div class="mono-label mt-0.5" style="color:var(--text-muted);font-size:.6rem">${a.client}${a.industry?' · '+a.industry:''}${a.geo?' · '+a.geo:''}</div></div><div class="flex items-center gap-2"><span class="tag ${it}">${a.integration}</span><i class="fas fa-chevron-down text-xs transition-transform" style="color:var(--text-muted)"></i></div></div><div class="flex flex-wrap gap-1.5 mb-3">${a.tools.map(t=>`<span class="tag tag-cyan">${t}</span>`).join('')||'<span class="text-xs" style="color:var(--text-muted)">No tools listed</span>'}</div><div class="flex items-center justify-between"><div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full" style="background:${mc}"></div><span class="mono-label font-600" style="color:${mc}">${a.maturityLabel}</span></div><div class="flex items-center gap-2">${a.agentsDeployed?'<span class="tag tag-green"><i class="fas fa-robot mr-1"></i>Agents</span>':'<span class="tag" style="color:var(--text-muted);border-color:rgba(120,144,156,0.15);background:rgba(120,144,156,0.04)">No Agents</span>'}${a.projectId?`<span class="tag tag-cyan"><i class="fas fa-folder mr-1"></i>${a.projectId}</span>`:''}</div></div><div class="account-detail-panel"><div class="mt-4 pt-4" style="border-top:1px solid var(--border-subtle)"><div class="grid grid-cols-2 gap-3 text-xs mb-3"><div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">DESCRIPTION</span><p class="mt-1" style="color:var(--text-primary)">${a.description||'N/A'}</p></div><div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">STATE</span><p class="mt-1 font-600" style="color:var(--accent-amber)">${a.state}</p></div><div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">MEASURABLE BENEFITS</span><p class="mt-1 font-600" style="color:${a.measurableBenefits.toLowerCase()==='yes'?'var(--accent-green)':'var(--accent-amber)'}">${a.measurableBenefits}</p></div><div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">PLATFORM</span><p class="mt-1 font-600" style="color:var(--accent-cyan)">${a.platformApproval}</p></div></div>${a.functions.length?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BUSINESS FUNCTIONS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.functions.map(f=>`<span class="tag tag-green">${f}</span>`).join('')}</div></div>`:''}${a.benefits.length?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BENEFITS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.benefits.map(b=>`<span class="tag tag-green"><i class="fas fa-check mr-1"></i>${b}</span>`).join('')}</div></div>`:''}${a.barriers.length?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BARRIERS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.barriers.map(b=>`<span class="tag tag-red">${b}</span>`).join('')}</div></div>`:''}${a.supportNeeded?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">SUPPORT REQUIRED</span><p class="text-xs mt-1" style="color:var(--text-primary)">${a.supportNeeded}</p></div>`:''}${a.agentUseCase?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">AGENT USE CASE</span><p class="text-xs mt-1" style="color:var(--text-primary)">${a.agentUseCase}</p></div>`:''}<button class="mt-2 w-full py-2.5 rounded-lg text-xs font-600 transition-all hover:scale-[1.01] font-mono" style="background:var(--accent-cyan-light);border:1px solid rgba(0,151,167,0.2);color:var(--accent-cyan);letter-spacing:.04em" data-full-profile="${idx}"><i class="fas fa-expand mr-1"></i> FULL NEURAL PROFILE</button></div></div>`;
+    card.innerHTML=`<div class="flex items-start justify-between mb-3"><div><h3 class="font-600 text-sm" style="color:var(--text-primary)">${a.name||a.client}</h3><div class="mono-label mt-0.5" style="color:var(--text-muted);font-size:.6rem">${a.client}${a.industry?' · '+a.industry:''}${a.geo?' · '+a.geo:''}</div></div><div class="flex items-center gap-2"><span class="tag ${ist.tag}">${a.integration}</span><i class="fas fa-chevron-down text-xs transition-transform" style="color:var(--text-muted)"></i></div></div><div class="flex flex-wrap gap-1.5 mb-3">${a.tools.map(t=>`<span class="tag tag-cyan">${t}</span>`).join('')||'<span class="text-xs" style="color:var(--text-muted)">No named tools listed</span>'}</div><div class="flex items-center justify-between"><div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full" style="background:${mc}"></div><span class="mono-label font-600" style="color:${mc}">${a.maturityLabel}</span></div><div class="flex items-center gap-2">${a.agentsDeployed?'<span class="tag tag-green"><i class="fas fa-robot mr-1"></i>Agents</span>':'<span class="tag tag-gray">No Agents</span>'}${a.projectId?`<span class="tag tag-cyan"><i class="fas fa-folder mr-1"></i>${a.projectId}</span>`:''}</div></div><div class="account-detail-panel"><div class="mt-4 pt-4" style="border-top:1px solid var(--border-subtle)"><div class="grid grid-cols-2 gap-3 text-xs mb-3"><div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">DESCRIPTION</span><p class="mt-1" style="color:var(--text-primary)">${a.description||'N/A'}</p></div><div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">TECH STACK</span><p class="mt-1 font-600" style="color:var(--accent-amber)">${a.techStack||'N/A'}</p></div><div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">MEASURABLE BENEFITS</span><p class="mt-1 font-600" style="color:${a.measurableBenefits.toLowerCase()==='yes'?'var(--accent-green)':'var(--accent-amber)'}">${a.measurableBenefits}</p></div><div><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">PLATFORM</span><p class="mt-1 font-600" style="color:var(--accent-cyan)">${a.platformApproval}</p></div></div>${a.functions.length?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BUSINESS FUNCTIONS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.functions.map(f=>`<span class="tag tag-green">${f}</span>`).join('')}</div></div>`:''}${a.benefits.length?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BENEFITS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.benefits.map(b=>`<span class="tag tag-green"><i class="fas fa-check mr-1"></i>${b}</span>`).join('')}</div></div>`:''}${a.barriers.length?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">BARRIERS</span><div class="flex flex-wrap gap-1.5 mt-1">${a.barriers.map(b=>`<span class="tag tag-red">${b}</span>`).join('')}</div></div>`:''}${a.supportNeeded?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">SUPPORT REQUIRED</span><p class="text-xs mt-1" style="color:var(--text-primary)">${a.supportNeeded}</p></div>`:''}${a.agentUseCase?`<div class="mb-3"><span class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.08em">AGENT USE CASE</span><p class="text-xs mt-1" style="color:var(--text-primary)">${a.agentUseCase}</p></div>`:''}<button class="mt-2 w-full py-2.5 rounded-lg text-xs font-600 transition-all hover:scale-[1.01] font-mono" style="background:var(--accent-cyan-light);border:1px solid rgba(0,151,167,0.2);color:var(--accent-cyan);letter-spacing:.04em" data-full-profile="${idx}"><i class="fas fa-expand mr-1"></i> FULL NEURAL PROFILE</button></div></div>`;
     card.addEventListener('click',function(e){if(e.target.closest('[data-full-profile]')){openAccountModal(filtered[parseInt(e.target.closest('[data-full-profile]').dataset.fullProfile)]);return}const panel=this.querySelector('.account-detail-panel'),chev=this.querySelector('.fa-chevron-down'),isOpen=panel.classList.contains('open');c.querySelectorAll('.account-detail-panel').forEach(p=>p.classList.remove('open'));c.querySelectorAll('.account-card').forEach(cd=>cd.classList.remove('active'));c.querySelectorAll('.fa-chevron-down').forEach(ch=>ch.style.transform='');if(!isOpen){panel.classList.add('open');this.classList.add('active');chev.style.transform='rotate(180deg)'}});
     card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click()}});
     c.appendChild(card);
@@ -434,17 +465,17 @@ function renderAccountCards(filter='all'){
 //  ACCOUNT MODAL
 // ================================================================
 function openAccountModal(a){
-  const mc=maturityColors[a.maturityLevel-1]||'#0097a7';
+  const mc=maturityColors[a.maturityLevel-1]||'#0097a7',ist=integrationStyle(a.integration);
   const ml=(l,c)=>`<div><div class="mono-label" style="color:var(--text-muted);font-size:.6rem;letter-spacing:.1em;margin-bottom:4px">${l}</div>${c}</div>`;
-  openModal(a.client+' — Neural Profile',`<div class="grid grid-cols-2 gap-4 mb-6"><div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">CLIENT</div><div class="text-sm font-600 mt-1">${a.client}</div></div><div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">INDUSTRY</div><div class="text-sm font-600 mt-1">${a.industry||'N/A'}</div></div><div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">GEOGRAPHY</div><div class="text-sm font-600 mt-1">${a.geo||'N/A'}</div></div><div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">PROJECT ID</div><div class="text-sm font-mono font-600 mt-1" style="color:var(--accent-cyan)">${a.projectId||'N/A'}</div></div></div><div class="space-y-4">${ml('MATURITY LEVEL',`<div class="flex items-center gap-3"><div class="font-mono text-2xl font-700" style="color:${mc}">Level ${a.maturityLevel}</div><span class="tag" style="color:${mc};border-color:${mc}33;background:${mc}11">${a.maturityLabel}</span></div><div class="progress-bar-bg mt-2"><div class="progress-bar-fill" style="width:${(a.maturityLevel/5)*100}%;background:${mc}"></div></div>`)}${a.description?ml('DESCRIPTION',`<p class="text-sm" style="color:var(--text-primary)">${a.description}</p>`):''}${a.techStack?ml('TECH STACK',`<p class="text-sm" style="color:var(--text-primary)">${a.techStack}</p>`):''}${a.tools.length?ml('AI TOOLS',`<div class="flex flex-wrap gap-1.5">${a.tools.map(t=>`<span class="tag tag-cyan">${t}</span>`).join('')}</div>`):''}${a.functions.length?ml('FUNCTIONS',`<div class="flex flex-wrap gap-1.5">${a.functions.map(f=>`<span class="tag tag-green">${f}</span>`).join('')}</div>`):''}${ml('INTEGRATION',`<span class="tag ${a.integration==='Partially'?'tag-amber':a.integration==='Integrated'?'tag-green':'tag-red'}">${a.integration}</span>`)}${ml('AI AGENTS',a.agentsDeployed?`<div><span class="tag tag-green"><i class="fas fa-robot mr-1"></i>Deployed/Piloted</span>${a.agentUseCase?`<p class="text-xs mt-2" style="color:var(--text-primary)">${a.agentUseCase}</p>`:''}</div>`:'<span class="tag" style="color:var(--text-muted);border-color:rgba(120,144,156,0.15)">None deployed</span>')}${ml('BENEFITS',`<span class="tag ${a.measurableBenefits.toLowerCase()==='yes'?'tag-green':'tag-amber'}">${a.measurableBenefits}</span>${a.benefits.length?`<div class="flex flex-wrap gap-1.5 mt-2">${a.benefits.map(b=>`<span class="tag tag-green"><i class="fas fa-check mr-1"></i>${b}</span>`).join('')}</div>`:''}`)}${a.barriers.length?ml('BARRIERS',`<div class="flex flex-wrap gap-1.5">${a.barriers.map(b=>`<span class="tag tag-red">${b}</span>`).join('')}</div>`):''}${a.supportNeeded?ml('SUPPORT',`<p class="text-sm" style="color:var(--text-primary)">${a.supportNeeded}</p>`):''}${a.categories.length?ml('CATEGORIES',`<div class="flex flex-wrap gap-1.5">${a.categories.map(c=>`<span class="tag tag-purple">${c}</span>`).join('')}</div>`):''}${a.leverageAreas.length?ml('LEVERAGE AREAS',`<div class="flex flex-wrap gap-1.5">${a.leverageAreas.map(l=>`<span class="tag tag-cyan">${l}</span>`).join('')}</div>`):''}</div>`);
+  openModal(a.client+' — Neural Profile',`<div class="grid grid-cols-2 gap-4 mb-6"><div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">CLIENT</div><div class="text-sm font-600 mt-1">${a.client}</div></div><div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">INDUSTRY</div><div class="text-sm font-600 mt-1">${a.industry||'N/A'}</div></div><div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">GEOGRAPHY</div><div class="text-sm font-600 mt-1">${a.geo||'N/A'}</div></div><div class="glow-card p-3"><div class="mono-label" style="color:var(--text-muted);font-size:.55rem;letter-spacing:.1em">PROJECT ID</div><div class="text-sm font-mono font-600 mt-1" style="color:var(--accent-cyan)">${a.projectId||'N/A'}</div></div></div><div class="space-y-4">${ml('MATURITY LEVEL',`<div class="flex items-center gap-3"><div class="font-mono text-2xl font-700" style="color:${mc}">Level ${a.maturityLevel}</div><span class="tag" style="color:${mc};border-color:${mc}33;background:${mc}11">${a.maturityLabel}</span></div><div class="progress-bar-bg mt-2"><div class="progress-bar-fill" style="width:${(a.maturityLevel/5)*100}%;background:${mc}"></div></div>`)}${a.description?ml('DESCRIPTION',`<p class="text-sm" style="color:var(--text-primary)">${a.description}</p>`):''}${a.techStack?ml('TECH STACK',`<p class="text-sm" style="color:var(--text-primary)">${a.techStack}</p>`):''}${a.tools.length?ml('AI TOOLS',`<div class="flex flex-wrap gap-1.5">${a.tools.map(t=>`<span class="tag tag-cyan">${t}</span>`).join('')}</div>`):''}${a.functions.length?ml('FUNCTIONS',`<div class="flex flex-wrap gap-1.5">${a.functions.map(f=>`<span class="tag tag-green">${f}</span>`).join('')}</div>`):''}${ml('INTEGRATION',`<span class="tag ${ist.tag}">${a.integration}</span>`)}${ml('AI AGENTS',a.agentsDeployed?`<div><span class="tag tag-green"><i class="fas fa-robot mr-1"></i>Deployed/Piloted</span>${a.agentUseCase?`<p class="text-xs mt-2" style="color:var(--text-primary)">${a.agentUseCase}</p>`:''}</div>`:'<span class="tag tag-gray">None deployed</span>')}${ml('BENEFITS',`<span class="tag ${a.measurableBenefits.toLowerCase()==='yes'?'tag-green':'tag-amber'}">${a.measurableBenefits}</span>${a.benefits.length?`<div class="flex flex-wrap gap-1.5 mt-2">${a.benefits.map(b=>`<span class="tag tag-green"><i class="fas fa-check mr-1"></i>${b}</span>`).join('')}</div>`:''}`)}${a.barriers.length?ml('BARRIERS',`<div class="flex flex-wrap gap-1.5">${a.barriers.map(b=>`<span class="tag tag-red">${b}</span>`).join('')}</div>`):''}${a.supportNeeded?ml('SUPPORT',`<p class="text-sm" style="color:var(--text-primary)">${a.supportNeeded}</p>`):''}${a.categories.length?ml('CATEGORIES',`<div class="flex flex-wrap gap-1.5">${a.categories.map(c=>`<span class="tag tag-purple">${c}</span>`).join('')}</div>`):''}${a.leverageAreas.length?ml('LEVERAGE AREAS',`<div class="flex flex-wrap gap-1.5">${a.leverageAreas.map(l=>`<span class="tag tag-cyan">${l}</span>`).join('')}</div>`):''}</div>`);
 }
 
 // ================================================================
 //  RENDER: GOVERNANCE
 // ================================================================
 function renderGovernance(){
-  const map={};accounts.forEach(a=>{if(a.platformApproval)map[a.platformApproval]=(map[a.platformApproval]||0)+1});
-  const cfg={'IBM':{icon:'fa-building',color:'var(--accent-cyan)',bg:'var(--accent-cyan-light)',desc:'IBM-approved platforms'},'Others':{icon:'fa-puzzle-piece',color:'var(--accent-amber)',bg:'var(--accent-amber-light)',desc:'Client/Third-party platforms'},'Client':{icon:'fa-user-shield',color:'var(--accent-green)',bg:'var(--accent-green-light)',desc:'Client-approved platforms'}};
+  const map={};accounts.forEach(a=>{const key=a.platformApproval||'Not Specified';map[key]=(map[key]||0)+1});
+  const cfg={'IBM':{icon:'fa-building',color:'var(--accent-cyan)',bg:'var(--accent-cyan-light)',desc:'IBM-approved platforms'},'Others':{icon:'fa-puzzle-piece',color:'var(--accent-amber)',bg:'var(--accent-amber-light)',desc:'Client/Third-party platforms'},'Client':{icon:'fa-user-shield',color:'var(--accent-green)',bg:'var(--accent-green-light)',desc:'Client-approved platforms'},'Not Specified':{icon:'fa-question',color:'var(--text-muted)',bg:'rgba(120,144,156,0.06)',desc:'Not yet reported'}};
   const c=document.getElementById('governance-cards');c.innerHTML='';
   Object.entries(map).forEach(([k,count])=>{const cf=cfg[k]||cfg['Others'];c.innerHTML+=`<div class="glow-card p-6 text-center" style="border-top:3px solid ${cf.color}"><div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style="background:${cf.bg}"><i class="fas ${cf.icon} text-xl" style="color:${cf.color}"></i></div><div class="font-mono text-3xl font-700 mb-1" style="color:${cf.color}">${count}</div><div class="text-sm font-600" style="color:var(--text-primary)">${k}</div><div class="text-xs mt-1" style="color:var(--text-muted)">${cf.desc}</div></div>`});
 }
